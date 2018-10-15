@@ -1,0 +1,59 @@
+Modelo de negocio del cliente "Deporte y Desafío"
+
+
+-- Sobre el cliente:
+
+Deporte y Desafío (https://deporteydesafio.com) es una fundación española dependiente del Ministerio de Educación y Ciencia, con sede general en Madrid, que lleva 20 años trabajando por la inclusión social de las personas con discapacidades a través del deporte.
+
+Fundada en 1998 por Jorge Pérez de Leza, Deporte y Desafío fue una de las principales entidades en introducir en España el deporte y el material adaptado para personas con discapacidades.
+
+Según explican en su página web: “Mediante la promoción del deporte, aumentamos la libertad de las personas que tienen una discapacidad, promovemos la independencia y ayudamos a descubrir, tanto a ellos como a sus familias, su potencial social, mental y deportivo”.
+
+Esto es posible gracias a una amplia variedad de actividades deportivas de carácter trimestral, jornadas puntuales y actividades de larga duración, en las que los participantes están continuamente acompañados de voluntarios y asistidos por especialistas.
+
+Cada año incorporan nuevos deportes y actividades, al mismo tiempo que amplían su presencia geográfica por todo el territorio español.
+
+Deporte y Desafío también contribuye a la formación e inserción laboral de las personas con discapacidad.
+
+
+--Estructura organizacional
+
+La fundación está presidida por Jorge Pérez de Leza, cargo de carácter institucional, quien encabeza el patronato que administra la fundación. Además, existe un patronato de honor con mero carácter institucional.
+
+La actividad íntegra de la fundación está en manos de su directora general, Carmen Pardo, quien dirige a un equipo de cuatro coordinadoras de programas deportivos, a la responsable de integración laboral y al director técnico del programa de esquí alpino adaptado (Sierra Nevada, Granada).
+
+
+-- Operatividad
+
+--- Financiación
+
+La fundación puede llevar a cabo sus actividades gracias a la financiación a través de subvenciones de entidades públicas y privadas.
+
+Entre patrocinadores públicos se encuentra el Ministerio de Educación y Ciencia y el Real Patronato sobre Discapacidad.
+
+Como patrocinadores privados pueden enumerarse a Fundación Prosegor, Telefónica, Banco Santander, La Caixa, El Corte Inglés, entre otros.
+
+Deporte y Desafío presenta a sus distintos patrocinadores proyectos por cada actividad o programa deportivo que pretende realizar. Estos son los que subvencionan cada uno de los proyectos y actividades programadas.
+
+
+--- Gestión de proyectos
+
+A la hora de llevar a cabo cada uno de los proyectos, la labor de gestión, ejecución, seguimiento y evaluación recae en el equipo de cuatro coordinadoras.
+
+Este trabajo integral comprende desde la búsqueda de los participantes con discapacidad que formarán parte de las actividades, la formación y dirección del grupo de voluntarios, la localización de los espacios para la realización de actividades, hacer presupuestos, receptar facturas, etc. así como las correspondientes labores de gestión diaria de oficina.
+
+Deporte y Desafío también cuenta con la figura de un director técnico en Sierra Nevada, siendo él el enlace entre la sede de Madrid y las actividades en la nieve que se realizan en Granada.
+
+También existe una persona encargada de la contabilidad de la fundación.
+
+
+--- Medición de resultados y evaluación de proyectos
+
+El método de medición a través del cual el equipo de cuatro coordinadoras de programas deportivos lleva a acabo la evaluación de proyectos es la observación participante.
+
+También realizan encuestas a los participantes y voluntarios para obtener las valoraciones sobre las diferentes actividades ejecutadas.
+
+Todos estos datos, en su mayoría de carácter cualitativo, son transmitidos a las empresas patrocinadoras partícipes en el proyecto en cuestión en forma de informes o memorias.
+
+Deporte y Desafío no cuenta con ninguna herramienta para gestionar todos los datos generados en el proceso de evaluación de proyectos.
+
