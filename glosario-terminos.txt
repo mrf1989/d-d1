@@ -1,4 +1,4 @@
-Glosario de términos
+﻿Glosario de términos
 
 -Donación: Aportación económica *o de medios materiales* realizada por un donante a la organización.
 -Donante: Persona o institución que contribuye económicamente con la fundación.
@@ -14,3 +14,4 @@ Glosario de términos
 -Programa deportivo: Actividad desarrollada por la fundación para la inclusión social de las personas con discapacidad a través del deporte que, a su vez, potencia la libertad e independencia para ellos y sus familiares.  
 -Proyecto: Idea propuesta por las coordinadoras, comprendida de la búsqueda de participantes, lugar de realización y voluntarios, elaboración de presupuestos, recepción de facturas, etc. para plantear una actividad a los patrocinadores con el fin de que estos la financien.
 -Voluntario: Persona comprometida con la fundación, asignada a un participante durante una actividad, cuya labor es acompañarlo y fomentar su integración en el grupo.
+ -Actividades -Boletín -Coordinador -Encuesta -Especialista -Informe -Inteligencia límite -Memoria -Subvención -Tutor legal -Familiar
