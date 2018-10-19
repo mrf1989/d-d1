@@ -1,6 +1,0 @@
-Objetivo principal: Desarrollar una herramienta que permita mejorar la gestión de los programas deportivos que se realizan dentro de la fundación.
-1. El proyecto tiene que ofrecer una herramienta que nos permita almacenar toda la información de los participantes y crear patrones de busqueda de cara a agilizar los procesos de selección de los perfiles ideales para la participación en las actividades.
-2. El proyecto tiene que prestar una herramienta que permita guardar información de los voluntarios de cara a una optimización de las actividades en un futuro.
-3. El proyecto debe tener una herramienta capaz de archivar información de las actividades que se realizan.
-Otros objetivos: Intranet.
-- Una aplicación que permita a la fundación publicar actividades próximas y que los voluntarios puedan manifestar su disponibilidad a traves de esta.
