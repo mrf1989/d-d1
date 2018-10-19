@@ -1,0 +1,8 @@
+Identificadores usados en los requisitos:
+
+- Requisitos generales: RG - ###
+- Requisitos de información: RI - ###
+- Reglas de negocio: RN - ###
+- Requisitos funcionales: RF - ###
+- Requisitos no funcionales: RNF - ###
+- Pruebas de aceptación: PA - ###
