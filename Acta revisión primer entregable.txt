@@ -1,0 +1,29 @@
+						Revisión del primer entregable
+		Comentarios generales:
+
+- mejorar la redacción, debe ser formal e impersonal
+- cuidar el formato
+- historial de versiones en una página independiente antes del índice
+- no marcar al profesor como seguidor de las tareas
+- enlace del proyecto y NO del repositorio
+- actualizar las tareas en ProjETSII
+- nombre del pdf del entregable debe ser el nombre del proyecto
+- crear un directorio para cada entregable
+- actas en el apéndice: descripción de lo que se ha hecho en la reunión y evidencias
+- poner enlaces de referencias
+- objetivos del negocio a 4 o 5 años
+- espectativas del sistema
+- historias de usuarios: no incluir demasiados detalles ni tampoco demasiado generales, y enumerarlas con identificadores únicos
+- no hablar de que vamos a hacer una base de datos ni de la implementación, solo nombrarlo como sistema de informción
+- leer recomendaciones de la web del profesor
+- las immágenes que se incluyan deben tener un porqué y estar referenciadas
+
+
+		Comentarios específicos Deporte y Desafío:
+
+- incluir más evidencias del negocio/dominio
+- indicar número de entrevistas, actas, fotos u otras evidencias
+- actualizar las tareas en ProjETSII
+- incluir información sobre las espectativas del sistema
+- requisitos generales: historias desde el punto de vista del responsable, más breves/simples
+- referencias de forma generalizada (numerito en la palabra y abajo la info o enlace a web)
