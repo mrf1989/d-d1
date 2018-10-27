@@ -12,7 +12,7 @@
 - Actas en el apéndice: descripción de lo que se ha hecho en la reunión y evidencias.
 - Poner enlaces de referencias.
 - Objetivos del negocio a 4 o 5 años.
-- Espectativas del sistema.
+- Expectativas del sistema.
 - Historias de usuarios: no incluir demasiados detalles ni tampoco demasiado generales, y enumerarlas con identificadores únicos.
 - No hablar de que vamos a hacer una base de datos ni de la implementación, solo nombrarlo como sistema de informción.
 - Leer recomendaciones de la web del profesor.
