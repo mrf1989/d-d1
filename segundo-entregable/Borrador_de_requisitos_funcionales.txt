@@ -9,13 +9,13 @@ RF-002
 
 Como coordinador
 quiero poder obtener un listado de los participantes de cada actividad, junto con sus respectivos voluntarios asignados, o en su defecto, poder asignar voluntarios a los participantes,
-para comprobar que las actividades se pueden realizar correctamente.
+para asegurar que las actividades se pueden realizar correctamente.
 
 RF-003
 
 Como coordinador
-quiero poder añadir, modificar, eliminar y consultar los datos de participantes, voluntarios, actividades y proyectos,
-para poder gestionar 
+quiero poder añadir, modificar, eliminar y consultar los datos de participantes, voluntarios, actividades y proyectos, tanto  actuales como anteriores,
+para poder gestionar la información que necesita la fundación. 
 
 RF-004
 
