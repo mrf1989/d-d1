@@ -51,9 +51,15 @@ INSERT INTO PERSONAS VALUES ('57153559V', 'Mateo', 'Ruiz López', '06/02/1978', '
     'Madrid', 'Madrid', '28017', 'mateo_ruiz_lopez@gmail.com', '614888909');
 INSERT INTO PERSONAS VALUES ('48228964G', 'María', 'Atocha Gómez', '12/12/1992', 'C/ Isabel I, 12',
     'Madrid', 'Madrid', '28001', 'matgomez@gmail.com', '615887998');
+INSERT INTO PERSONAS VALUES ('95487762B', 'Ana','Cuevas Hernández', '04/04/1988', 'C/ Mayor, 12',
+    'Segovia', 'Segovia', '20456', 'anacuhe@gmail.com', '644181345');
+INSERT INTO PERSONAS VALUES ('55612222B', 'Estafanía', 'Gómez Gómez', '19/10/1990', 'C/ Periodistas, 44, 1ºB',
+    'Madrid', 'Madrid', '28006', 'estefa_gg@gmail.com', '695777100');
     
 -- Insertar COORDINADORES
 INSERT INTO COORDINADORES(dni) VALUES ('98385816W');
+INSERT INTO COORDINADORES(dni) VALUES ('95487762B');
+INSERT INTO COORDINADORES(dni) VALUES ('55612222B');
 
 -- Insertar VOLUNTARIOS
 INSERT INTO VOLUNTARIOS(dni, prioridadParticipacion) VALUES ('47339192V', 'alta');
