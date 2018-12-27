@@ -16,6 +16,16 @@ END ASSERT_EQUALS;
 -- PAQUETES (especificaciones)
 -------------------------------------------------------------------------------
 
+-- Tabla COORDINADORES
+CREATE OR REPLACE PACKAGE PRUEBAS_COORDINADORES AS
+    PROCEDURE inicializar;
+    PROCEDURE insertar (nombre_prueba VARCHAR2, w_dni CHAR, salidaEsperada BOOLEAN);
+    PROCEDURE actualizar (nombre_prueba VARCHAR2, w_OID_Coord INTEGER, w_dni CHAR, salidaEsperada BOOLEAN);
+    PROCEDURE eliminar (nombre_prueba VARCHAR2, w_OID_Coord INTEGER, salidaEsperada BOOLEAN);
+END PRUEBAS_COORDINADORES;
+/
+
+-- Tabla PERSONAS
 CREATE OR REPLACE PACKAGE PRUEBAS_PERSONAS AS 
     PROCEDURE inicializar;
     PROCEDURE insertar (nombre_prueba VARCHAR2, w_dni CHAR, w_nombre VARCHAR2, w_apellidos VARCHAR2, w_fechaNacimiento VARCHAR2, w_direccion VARCHAR2,
@@ -30,6 +40,75 @@ END PRUEBAS_PERSONAS;
 -- PAQUETES (cuerpos)
 -------------------------------------------------------------------------------
 
+-- Tabla COORDINADORES
+CREATE OR REPLACE PACKAGE BODY PRUEBAS_COORDINADORES AS
+    PROCEDURE inicializar AS
+    BEGIN
+        DELETE FROM COORDINADORES;
+    END inicializar;
+
+    PROCEDURE insertar (nombre_prueba VARCHAR2, w_dni CHAR, salidaEsperada BOOLEAN) AS
+    salida BOOLEAN := true;
+    coordinador COORDINADORES%ROWTYPE;
+    w_OID_Coord INTEGER;
+    BEGIN
+        INSERT INTO COORDINADORES(dni) VALUES(w_dni);
+        w_OID_Coord := SEC_Coord.CURRVAL;
+        SELECT * INTO coordinador FROM COORDINADORES WHERE OID_Coord=w_OID_Coord;
+        IF (coordinador.dni<>w_dni) THEN
+            salida := false;
+        END IF;
+        COMMIT WORK;
+    
+        DBMS_OUTPUT.PUT_LINE(nombre_prueba || ':' || ASSERT_EQUALS(salida,salidaEsperada));
+    
+        EXCEPTION
+        WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE(nombre_prueba || ':' || ASSERT_EQUALS(false,salidaEsperada));
+        ROLLBACK;
+    END insertar;
+
+    PROCEDURE actualizar (nombre_prueba VARCHAR2, w_OID_Coord INTEGER, w_dni CHAR, salidaEsperada BOOLEAN) AS
+    salida BOOLEAN := true;
+    coordinador COORDINADORES%ROWTYPE;
+    BEGIN
+        UPDATE COORDINADORES SET dni=w_dni WHERE OID_Coord=w_OID_Coord;
+        SELECT * INTO coordinador FROM COORDINADORES WHERE OID_Coord=w_OID_Coord;
+        IF (coordinador.dni<>w_dni) THEN
+            salida := false;
+        END IF;
+        COMMIT WORK;
+    
+        DBMS_OUTPUT.PUT_LINE(nombre_prueba || ':' || ASSERT_EQUALS(salida,salidaEsperada));
+    
+        EXCEPTION
+        WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE(nombre_prueba || ':' || ASSERT_EQUALS(false,salidaEsperada));
+        ROLLBACK;
+    END actualizar;
+
+    PROCEDURE eliminar (nombre_prueba VARCHAR2, w_OID_Coord INTEGER, salidaEsperada BOOLEAN) AS
+        salida BOOLEAN := true;
+        n_coordinadores INTEGER;
+    BEGIN
+        DELETE FROM COORDINADORES WHERE OID_Coord=w_OID_Coord;
+        SELECT COUNT(*) INTO n_coordinadores FROM COORDINADORES WHERE OID_Coord=w_OID_Coord;
+        IF (n_coordinadores<>0) THEN
+            salida := false;
+        END IF;
+        COMMIT WORK;
+    
+        DBMS_OUTPUT.PUT_LINE(nombre_prueba || ':' || ASSERT_EQUALS(salida,salidaEsperada));
+    
+        EXCEPTION
+        WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE(nombre_prueba || ':' || ASSERT_EQUALS(false,salidaEsperada));
+        ROLLBACK;
+    END eliminar;
+END PRUEBAS_COORDINADORES;
+/
+
+-- Tabla PERSONAS
 CREATE OR REPLACE PACKAGE BODY PRUEBAS_PERSONAS AS
     PROCEDURE inicializar AS
     BEGIN
@@ -114,5 +193,12 @@ BEGIN
     pruebas_personas.actualizar('Prueba actualizar 1', '12345678A', 'Manuel', 'Núñez Ortiz', '12/10/1990', 'Avd. Kansas City, 12, 4ºC', 'Sevilla', 'Sevilla', '41007', 'm_nuor@gmail.com', '645234184', true);
     pruebas_personas.eliminar('Prueba eliminar 1', '47339192V', true);
     -- ...
+END;
+/
+
+-- Tabla COORDINADORES
+BEGIN
+    pruebas_coordinadores.inicializar;
+    pruebas_coordinadores.insertar('Prueba 1', '12345678A', true);
 END;
 /
