@@ -2,8 +2,8 @@
 -- TABLAS
 -------------------------------------------------------------------------------
 
-DROP TABLE FORMULARIOS;
 DROP TABLE RESPUESTAS;
+DROP TABLE FORMULARIOS;
 DROP TABLE CUESTIONARIOS;
 DROP TABLE PREGUNTAS;
 DROP TABLE ENVIOS;
