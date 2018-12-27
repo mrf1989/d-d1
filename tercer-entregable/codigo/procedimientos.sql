@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
--- FUNCIONES y PROCEDIMIENTOS
+-- PROCEDIMIENTOS y FUNCIONES
 -------------------------------------------------------------------------------
 
 -- Registro de COORDINADORES en el sistema de información
@@ -14,6 +14,16 @@ BEGIN
     INSERT INTO COORDINADORES (dni) VALUES (w_dni);
     COMMIT WORK;
 END Registrar_Coordinador;
+/
+
+CREATE OR REPLACE PROCEDURE Eliminar_Coordinador (w_dni CHAR) IS
+    persona PERSONAS%ROWTYPE;
+BEGIN
+    SELECT * INTO persona FROM PERSONAS WHERE dni=w_dni;
+    IF (persona.dni=w_dni) THEN
+        DELETE FROM PERSONAS WHERE dni=w_dni;
+    END IF;
+END;
 /
 
 -- Registro de VOLUNTARIOS en el sistema de información
