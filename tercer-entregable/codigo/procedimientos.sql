@@ -1,6 +1,18 @@
 -------------------------------------------------------------------------------
 -- PROCEDIMIENTOS y FUNCIONES
 -------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-- 1. Registro de personas
+-- 2. Registro de patrocinadores, patrocinios y donaciones
+-- 3. Registro de proyectos y actividades
+-- 4. Registro de inscripciones y colaboraciones
+-- 5. Registro de mensajes y envíos
+-- 6. Registro de informes médicos de participantes
+-- 7. Registro de recibos
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-- 1. Registro de personas
+-------------------------------------------------------------------------------
 
 -- Registrar COORDINADOR en el sistema de información
 CREATE OR REPLACE PROCEDURE Registrar_Coordinador (w_dni IN PERSONAS.dni%TYPE, w_nombre IN PERSONAS.nombre%TYPE,
@@ -62,6 +74,10 @@ BEGIN
 END Registrar_Participante;
 /
 
+-------------------------------------------------------------------------------
+-- 2. Registro de patrocinadores, patrocinios y donaciones
+-------------------------------------------------------------------------------
+
 -- Registrar PATROCINADOR en el sistema de información
 CREATE OR REPLACE PROCEDURE Registrar_Patrocinador (w_cif IN INSTITUCIONES.cif%TYPE, w_nombre IN INSTITUCIONES.nombre%TYPE,
     w_telefono IN INSTITUCIONES.telefono%TYPE, w_direccion IN INSTITUCIONES.direccion%TYPE, w_localidad IN INSTITUCIONES.localidad%TYPE,
@@ -71,6 +87,15 @@ BEGIN
     INSERT INTO INSTITUCIONES VALUES (w_cif, w_nombre, w_telefono, w_direccion, w_localidad, w_provincia, w_codigoPostal, w_email, 1, w_tipo);
     COMMIT WORK;
 END Registrar_Patrocinador;
+/
+
+-- Añadir PATROCINIO a ACTIVIDAD en el sistema de información
+CREATE OR REPLACE PROCEDURE Add_Patrocinio (w_cif IN INSTITUCIONES.cif%TYPE, w_OID_Act IN ACTIVIDADES.OID_Act%TYPE,
+    w_cantidad IN PATROCINIOS.cantidad%TYPE) IS
+BEGIN
+    INSERT INTO PATROCINIOS(cif, OID_Act, cantidad) VALUES (w_cif, w_OID_Act, w_cantidad);
+    COMMIT WORK;
+END Add_Patrocinio;
 /
 
 -- Registrar DONACION en el sistema de información
@@ -94,6 +119,10 @@ BEGIN
 END Registrar_Donacion;
 /
 
+-------------------------------------------------------------------------------
+-- 3. Registro de proyectos y actividades
+-------------------------------------------------------------------------------
+
 -- Registrar PROYECTO por un COORDINADOR en el sistema de información
 CREATE OR REPLACE PROCEDURE Registrar_Proyecto (w_dni IN PERSONAS.dni%TYPE, w_nombre IN PROYECTOS.nombre%TYPE, w_ubicacion IN PROYECTOS.ubicacion%TYPE,
     w_esEvento IN PROYECTOS.esEvento%TYPE, w_esProgDep IN PROYECTOS.esProgDep%TYPE) IS
@@ -108,31 +137,106 @@ BEGIN
 END Registrar_Proyecto;
 /
 
--- Eliminar PERSONA (con efecto cascada) en el sistema de información
-CREATE OR REPLACE PROCEDURE Eliminar_Persona (w_dni IN PERSONAS.dni%TYPE) IS
-    persona PERSONAS%ROWTYPE;
+-- -- Función auxiliar: calcular precio de inscripción a actividad.
+CREATE OR REPLACE FUNCTION calcularCosteInscripcion (w_costeTotal IN ACTIVIDADES.costeTotal%TYPE, w_numeroPlazas IN ACTIVIDADES.numeroPlazas%TYPE)
+RETURN NUMBER IS w_costeInscripcion ACTIVIDADES.costeInscripcion%TYPE;
 BEGIN
-    SELECT * INTO persona FROM PERSONAS WHERE dni=w_dni;
-    IF (persona.dni=w_dni) THEN
-        DELETE FROM PERSONAS WHERE dni=w_dni;
-    END IF;
-    COMMIT WORK;
-END Eliminar_Persona;
+    w_costeInscripcion := w_costeTotal / w_numeroPlazas;
+RETURN (w_costeInscripcion);
+END;
 /
 
--- Eliminar PATROCINADOR en el sistema de información
-CREATE OR REPLACE PROCEDURE Eliminar_Patrocinador (w_cif IN INSTITUCIONES.cif%TYPE) IS
-    patrocinador INSTITUCIONES%ROWTYPE;
+-- AÑADIR ACTIVIDAD a PROYECTO en el sistema de información
+CREATE OR REPLACE PROCEDURE Add_Actividad (w_nombre IN ACTIVIDADES.nombre%TYPE, w_objetivo IN ACTIVIDADES.objetivo%TYPE,
+    w_fechaInicio IN ACTIVIDADES.fechaInicio%TYPE, w_fechaFin IN ACTIVIDADES.fechaFin%TYPE, w_numeroPlazas IN ACTIVIDADES.numeroPlazas%TYPE,
+    w_tipo IN ACTIVIDADES.tipo%TYPE, w_costeTotal IN ACTIVIDADES.costeTotal%TYPE, w_OID_Proj IN ACTIVIDADES.OID_Proj%TYPE) IS
+    w_costeInscripcion ACTIVIDADES.costeInscripcion%TYPE;
 BEGIN
-    SELECT * INTO patrocinador FROM INSTITUCIONES WHERE cif=w_cif;
-    IF (patrocinador.cif=w_cif) THEN
-        DELETE FROM INSTITUCIONES WHERE cif=w_cif;
-    END IF;
+    w_costeInscripcion := calcularCosteInscripcion(w_costeTotal, w_numeroPlazas);
+    INSERT INTO ACTIVIDADES(OID_Proj, nombre, objetivo, fechaInicio, fechaFin, numeroPlazas, voluntariosRequeridos, tipo, costeTotal, costeInscripcion)
+    VALUES (w_OID_Proj, w_nombre, w_objetivo, w_fechaInicio, w_fechaFin, w_numeroPlazas, 0, w_tipo, w_costeTotal, w_costeInscripcion);
     COMMIT WORK;
-END Eliminar_Patrocinador;
+END Add_Actividad;
 /
 
--- Registro de mensajes en el sistema de información
+-------------------------------------------------------------------------------
+-- 4. Registro de inscripciones y colaboraciones
+-------------------------------------------------------------------------------
+
+-- Inscribir PARTICIPANTE en ACTIVIDAD en el sistema de información
+CREATE OR REPLACE PROCEDURE Inscribir_Participante (w_dni IN PERSONAS.dni%TYPE, w_OID_Act IN ACTIVIDADES.OID_Act%TYPE) IS
+w_OID_Part PARTICIPANTES.OID_Part%TYPE;
+w_importe RECIBOS.importe%TYPE;
+w_OID_Rec RECIBOS.OID_Rec%TYPE;
+BEGIN
+    SELECT OID_Part INTO w_OID_Part FROM PARTICIPANTES WHERE dni=w_dni;
+    SELECT costeInscripcion INTO w_importe FROM ACTIVIDADES WHERE OID_Act=w_OID_Act;
+    Add_ReciboInscripcion(w_OID_Act,w_OID_Part,SYSDATE,w_importe,'pendiente');
+    SELECT OID_Rec INTO w_OID_Rec FROM RECIBOS WHERE OID_Act=w_OID_Act AND OID_Part=w_OID_Part;
+    INSERT INTO INSCRIPCIONES(OID_Part, OID_Act) VALUES (w_OID_Part, w_OID_Act);
+    COMMIT WORK;
+END Inscribir_Participante;
+/
+
+-- Inscribir VOLUNTARIO en ACTIVIDAD en el sistema de información
+CREATE OR REPLACE PROCEDURE Inscribir_Voluntario (w_dni IN PERSONAS.dni%TYPE, w_OID_Act IN ACTIVIDADES.OID_Act%TYPE) IS
+w_OID_Vol VOLUNTARIOS.OID_Vol%TYPE;
+BEGIN
+    SELECT OID_Vol INTO w_OID_Vol FROM VOLUNTARIOS WHERE dni=w_dni;
+    INSERT INTO COLABORACIONES(OID_Vol, OID_Act) VALUES (w_OID_Vol, w_OID_Act);
+    COMMIT WORK;
+END Inscribir_Voluntario;
+/
+
+-- Añadir ESTADO DE INTERES de un VOLUNTARIO en una ACTIVIDAD en el sistema de información
+CREATE OR REPLACE PROCEDURE Add_InteresVoluntariado (w_dni IN VOLUNTARIOS.dni%TYPE, w_OID_Act IN ACTIVIDADES.OID_Act%TYPE,
+w_estado IN ESTAINTERESADOEN.estado%TYPE) IS
+w_OID_Vol VOLUNTARIOS.OID_Vol%TYPE;
+BEGIN
+    SELECT OID_Vol INTO w_OID_Vol FROM VOLUNTARIOS WHERE dni=w_dni;
+    INSERT INTO ESTAINTERESADOEN(OID_Vol, OID_Part, OID_Act, estado) VALUES (w_OID_Vol, null, w_OID_Act, w_estado);
+    COMMIT WORK;
+END Add_InteresVoluntariado;
+/
+
+-- Actualizar ESTADO DE INTERES de un VOLUNTARIO en una ACTIVIDAD en el sistema de información
+CREATE OR REPLACE PROCEDURE Act_InteresVoluntariado (w_dni IN VOLUNTARIOS.dni%TYPE, w_OID_Act IN ACTIVIDADES.OID_Act%TYPE,
+w_estado IN ESTAINTERESADOEN.estado%TYPE) IS
+w_OID_Vol VOLUNTARIOS.OID_Vol%TYPE;
+BEGIN
+    SELECT OID_Vol INTO w_OID_Vol FROM VOLUNTARIOS WHERE dni=w_dni;
+    UPDATE ESTAINTERESADOEN SET estado = w_estado WHERE OID_Vol=w_OID_Vol AND OID_Act=w_OID_Act;
+    COMMIT WORK;
+END Act_InteresVoluntariado;
+/
+
+-- Añadir ESTADO DE INTERES de un PARTICIPANTE en una ACTIVIDAD en el sistema de información
+CREATE OR REPLACE PROCEDURE Add_InteresParticipante (w_dni IN PARTICIPANTES.dni%TYPE, w_OID_Act IN ACTIVIDADES.OID_Act%TYPE,
+w_estado IN ESTAINTERESADOEN.estado%TYPE) IS
+w_OID_Part PARTICIPANTES.OID_Part%TYPE;
+BEGIN
+    SELECT OID_Part INTO w_OID_Part FROM PARTICIPANTES WHERE dni=w_dni;
+    INSERT INTO ESTAINTERESADOEN(OID_Vol, OID_Part, OID_Act, estado) VALUES (null, w_OID_Part, w_OID_Act, w_estado);
+    COMMIT WORK;
+END Add_InteresParticipante;
+/
+
+-- Actualizar ESTADO DE INTERES de un PARTICIPANTE en una ACTIVIDAD en el sistema de información
+CREATE OR REPLACE PROCEDURE Act_InteresParticipante (w_dni IN PARTICIPANTES.dni%TYPE, w_OID_Act IN ACTIVIDADES.OID_Act%TYPE,
+w_estado IN ESTAINTERESADOEN.estado%TYPE) IS
+w_OID_Part PARTICIPANTES.OID_Part%TYPE;
+BEGIN
+    SELECT OID_Part INTO w_OID_Part FROM PARTICIPANTES WHERE dni=w_dni;
+    UPDATE ESTAINTERESADOEN SET estado = w_estado WHERE OID_Part=w_OID_Part AND OID_Act=w_OID_Act;
+    COMMIT WORK;
+END Act_InteresParticipante;
+/
+
+-------------------------------------------------------------------------------
+-- 5. Registro de mensajes y envíos
+-------------------------------------------------------------------------------
+
+-- Registrar MENSAJE en el sistema de información
 CREATE OR REPLACE PROCEDURE Registrar_Mensaje (w_tipo IN MENSAJES.tipo%TYPE, w_fechaEnvio IN MENSAJES.fechaEnvio%TYPE,
     w_asunto IN MENSAJES.asunto%TYPE, w_contenido IN MENSAJES.contenido%TYPE, w_OID_Coord IN COORDINADORES.OID_Coord%TYPE) IS
 BEGIN
@@ -141,7 +245,7 @@ BEGIN
 END Registrar_Mensaje;
 /
 
--- Registro de los envíos de mensajes en el sistema de información
+-- Registrar ENVIO de MENSAJE en el sistema de información
 CREATE OR REPLACE PROCEDURE Registrar_Envio (w_dni IN PERSONAS.dni%TYPE, w_cif IN INSTITUCIONES.cif%TYPE,
     w_OID_M IN MENSAJES.OID_M%TYPE) IS
 BEGIN
@@ -150,12 +254,81 @@ BEGIN
 END Registrar_Envio;
 /
 
--- Registro de los informes médicos asociados a un participante en el sistema de información
-CREATE OR REPLACE PROCEDURE Registrar_InformeMedico (w_descripcion IN INFORMESMEDICOS.descripcion%TYPE,
+-------------------------------------------------------------------------------
+-- 6. Registro de informes médicos de participantes
+-------------------------------------------------------------------------------
+
+-- Añadir INFORME MEDICO a un PARTICIPANTE en el sistema de información
+CREATE OR REPLACE PROCEDURE Add_InformeMedico (w_descripcion IN INFORMESMEDICOS.descripcion%TYPE,
     w_fecha IN INFORMESMEDICOS.fecha%TYPE, w_OID_Part IN INFORMESMEDICOS.OID_Part%TYPE) IS
 BEGIN
     INSERT INTO INFORMESMEDICOS (descripcion, fecha, OID_Part) VALUES (w_descripcion, w_fecha, w_OID_Part);
     COMMIT WORK;
-END Registrar_InformeMedico;
+END Add_InformeMedico;
 /
 
+-------------------------------------------------------------------------------
+-- 7. Registro de recibos
+-------------------------------------------------------------------------------
+
+-- -- Función auxiliar: calcula la fecha de vencimiento de pago de un recibo.
+CREATE OR REPLACE FUNCTION calcularFechaVencimiento (w_fechaEmision IN RECIBOS.fechaEmision%TYPE)
+RETURN DATE IS w_fechaVencimiento RECIBOS.fechaVencimiento%TYPE;
+BEGIN
+    SELECT ADD_MONTHS(w_fechaEmision, 2) INTO w_fechaVencimiento FROM DUAL;
+RETURN (w_fechaVencimiento);
+END;
+/
+
+-- Registrar RECIBO de INSCRIPCION en el sistema de información
+CREATE OR REPLACE PROCEDURE Add_ReciboInscripcion (w_OID_Act IN ACTIVIDADES.OID_Act%TYPE, w_OID_Part IN PARTICIPANTES.OID_Part%TYPE,
+    w_fechaEmision IN RECIBOS.fechaEmision%TYPE, w_importe IN RECIBOS.importe%TYPE, w_estado IN RECIBOS.estado%TYPE) IS
+    w_fechaVencimiento RECIBOS.fechaVencimiento%TYPE;
+BEGIN
+    w_fechaVencimiento := calcularFechaVencimiento(w_fechaEmision);
+    INSERT INTO RECIBOS (fechaEmision, fechaVencimiento, importe, estado, OID_Act, OID_Part)
+    VALUES (w_fechaEmision, w_fechaVencimiento, w_importe, w_estado, w_OID_Act, w_OID_Part);
+    COMMIT WORK;
+END Add_ReciboInscripcion;
+/
+
+-- Actualizar RECIBO en el sistema de información
+CREATE OR REPLACE PROCEDURE Act_Recibo (w_OID_Rec IN RECIBOS.OID_Rec%TYPE, w_fechaVencimiento IN RECIBOS.fechaVencimiento%TYPE,
+    w_importe IN RECIBOS.importe%TYPE, w_estado IN RECIBOS.estado%TYPE) IS
+BEGIN
+    UPDATE RECIBOS SET fechaVencimiento=w_fechaVencimiento, importe=w_importe, estado=w_estado WHERE OID_Rec=w_OID_Rec;
+    COMMIT WORK;
+END Act_Recibo;
+/
+
+-------------------------------------------------------------------------------
+-- 8. Registro de cuestionarios
+-------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------
+-- Eliminación del sistema de información
+-------------------------------------------------------------------------------
+
+-- Eliminar PERSONA (con efecto cascada) en el sistema de información
+CREATE OR REPLACE PROCEDURE Eliminar_Persona (w_dni IN PERSONAS.dni%TYPE) IS
+    dniPersona PERSONAS.dni%TYPE;
+BEGIN
+    SELECT dni INTO dniPersona FROM PERSONAS WHERE dni=w_dni;
+    IF (dniPersona=w_dni) THEN
+        DELETE FROM PERSONAS WHERE dni=w_dni;
+    END IF;
+    COMMIT WORK;
+END Eliminar_Persona;
+/
+
+-- Eliminar PATROCINADOR en el sistema de información
+CREATE OR REPLACE PROCEDURE Eliminar_Patrocinador (w_cif IN INSTITUCIONES.cif%TYPE) IS
+    cifPatrocinador INSTITUCIONES.cif%TYPE;
+BEGIN
+    SELECT cif INTO cifPatrocinador FROM INSTITUCIONES WHERE cif=w_cif;
+    IF (cifPatrocinador=w_cif) THEN
+        DELETE FROM INSTITUCIONES WHERE cif=w_cif;
+    END IF;
+    COMMIT WORK;
+END Eliminar_Patrocinador;
+/
