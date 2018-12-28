@@ -202,3 +202,66 @@ BEGIN
     pruebas_coordinadores.insertar('Prueba 1', '12345678A', true);
 END;
 /
+
+-------------------------------------------------------------------------------
+-- PRUEBAS de FUNCIONES
+-------------------------------------------------------------------------------
+
+-- Calcular coste de inscripción a actividad
+BEGIN
+DBMS_OUTPUT.PUT_LINE(calcularCosteInscripcion(1500, 45));
+END;
+
+-- Calcular fecha de vencimiento de pago de recibo
+BEGIN
+DBMS_OUTPUT.PUT_LINE(calcularFechaVencimiento(SYSDATE));
+END;
+
+-------------------------------------------------------------------------------
+-- PRUEBAS de PROCEDIMIENTOS
+-------------------------------------------------------------------------------
+
+EXEC Registrar_Persona('12345678A', 'María', 'Núñez Ortiz', '12/10/1990', 'Avd. Kansas City, 12, 4ºC', 'Sevilla', 'Sevilla', '41007', 'm_nuor@gmail.com', '645234184');
+EXEC Registrar_Persona('89321345B', 'Pedro', 'López Durán', '23/03/1986', 'C/ Laurel, 23, 1ºB', 'Sevilla', 'Sevilla', '41005', 'pedro86_lodu@hotmail.com', '611765473');
+EXEC Act_Persona('12345678A', 'María', 'Núñez Ortiz', '22/10/1990', 'Avd. Kansas City, 12, 4ºC', 'Sevilla', 'Sevilla', '41007', 'maria_nuo@gmail.com', '645234184');
+EXEC Eliminar_Persona('89321345B');
+EXEC Registrar_Coordinador('98385816W', 'Cristina', 'Caro Caro', '15/08/1991', 'C/ Vallehermoso, 62, 1ºA', 'Madrid', 'Madrid', '28023', 'ccaroc@deporteydesafio.com', '629123456');
+EXEC Registrar_Voluntario('23987795C', 'Pablo', 'Cabello Marín', '11/11/1982', 'C/ Narciso, 46, 8ºA', 'Madrid', 'Madrid', '28015', 'cabello_marin@gmail.com', '658679123', 'alta');
+EXEC Registrar_TutorLegal('57153559V', 'Mateo', 'Ruiz López', '06/02/1978', 'C/ Miguel Hernández, 27, 2ºB', 'Madrid', 'Madrid', '28017', 'mateo_ruiz_lopez@gmail.com', '614888909');
+EXEC Registrar_Participante('64090012E', 'Alicia', 'Torcal Molar', '17/09/2004', 'C/ Cerezo, 2, 4ºC', 'Madrid', 'Madrid', '28086', null, '623168465', '0,45', 'alta', '23987795C', '57153559V');
+EXEC Registrar_Institucion('A87674532', 'El Corte Inglés, S.A.', '654123987', 'C/ Preciados, 1', 'Madrid', 'Madrid', '28001', 'contacto@elcorteingles.com');
+EXEC Act_Institucion('A87674532', 'El Corte Inglés, S.A.', '654123989', 'C/ Preciados, 1', 'Madrid', 'Madrid', '28001', 'info@elcorteingles.com');
+EXEC Eliminar_Institucion('A87674532');
+EXEC Registrar_Proyecto('98385816W', 'Mercadillo de Navidad', 'Mercado de Canal, Madrid', 1, 0);
+EXEC Registrar_Proyecto('98385816W', 'Baloncesto Adaptado 2018', 'Centro Deportivo Pío Baroja, Madrid', 0, 1);
+EXEC Add_Actividad('Mercadillo de Navidad', 'Mejorar la integración social de las personas con discapacidad', '27/12/2018', '27/12/2018', 30, 'social', 0, 1);
+EXEC Add_Actividad('Campeonato 3x3 Basket adaptado', 'Ayudar a la mejora de la condición física de los participantes', '28/12/2018', '23/12/2018', 45, 'deportiva', 750, 2);
+EXEC Registrar_Patrocinador('A87674532', 'El Corte Inglés, S.A.', '654123989', 'C/ Preciados, 1', 'Madrid', 'Madrid', '28001', 'info@elcorteingles.com', 'oro');
+EXEC Add_Patrocinio('A87674532', 2, 500);
+EXEC Registrar_Donacion('12345678A', null, 'Equipaciones de esquí', 'equipaciones', 10, '49,90');
+EXEC Inscribir_Participante('64090012E', 1);
+EXEC Inscribir_Participante('64090012E', 2);
+EXEC Inscribir_Voluntario('23987795C', 2);
+EXEC Add_InteresVoluntariado('23987795C', 1, 1);
+EXEC Add_InteresVoluntariado('23987795C', 2, 1);
+EXEC Act_InteresVoluntariado('23987795C', 1, 0);
+EXEC Add_InteresParticipante('64090012E', 1, 1);
+EXEC Add_InteresParticipante('64090012E', 2, 0);
+EXEC Act_InteresParticipante('64090012E', 2, 1);
+EXEC Registrar_Mensaje('newsletter', '26/12/2018','¡Llega el Mercadillo de Navidad!', 'Código HTML de la newsletter', 1);
+EXEC Registrar_Envio('12345678A', null, 1);
+EXEC Registrar_Envio('23987795C', null, 1);
+EXEC Registrar_Envio('57153559V', null, 1);
+EXEC Registrar_Envio(null, 'A87674532', 1);
+EXEC Add_InformeMedico('Descripción del informe médico completa', '14/05/2018', 1);
+EXEC Act_Recibo(1, '28/02/2019', '10,00', 'pagado');
+EXEC Registrar_Pregunta('textual', '¿Qué sugerencias haría para mejorar la actividad de cara a futuras ediciones?');
+EXEC Registrar_Pregunta('numerica', 'Valore de 0 a 10 el evento');
+EXEC Registrar_Cuestionario(1);
+EXEC Registrar_Cuestionario(2);
+EXEC Add_Formulario(1, 1);
+EXEC Add_Formulario(2, 1);
+EXEC Add_Formulario(2, 2);
+EXEC Registrar_Respuesta(1, null, 1, 'Contar con una segunda pista de baloncesto para poder tener a más equipos jugando al mismo tiempo.');
+EXEC Registrar_Respuesta(null, 1, 2, '8');
+EXEC Act_Pregunta(1, 2, 'opcional', 'Eliga los tenderetes que más le gustaron');
