@@ -130,8 +130,12 @@ CREATE OR REPLACE PROCEDURE Registrar_Participante (w_dni IN PERSONAS.dni%TYPE, 
     PERSONAS.direccion%TYPE, w_localidad IN PERSONAS.localidad%TYPE, w_provincia IN PERSONAS.provincia%TYPE,
     w_codigoPostal IN PERSONAS.codigoPostal%TYPE, w_email IN PERSONAS.email%TYPE, w_telefono IN PERSONAS.telefono%TYPE,
     w_gradoDiscapacidad IN PARTICIPANTES.gradoDiscapacidad%TYPE, w_prioridadParticipacion IN PARTICIPANTES.prioridadParticipacion%TYPE,
-    w_OID_Vol IN PARTICIPANTES.OID_Vol%TYPE, w_OID_Tut IN PARTICIPANTES.OID_Tut%TYPE) IS
+    w_dniVol IN VOLUNTARIOS.dni%TYPE, w_dniTut IN TUTORESLEGALES.dni%TYPE) IS
+    w_OID_Vol VOLUNTARIOS.OID_Vol%TYPE;
+    w_OID_Tut TUTORESLEGALES.OID_Tut%TYPE;
 BEGIN
+    SELECT OID_Vol INTO w_OID_Vol FROM VOLUNTARIOS WHERE dni=w_dniVol;
+    SELECT OID_Tut INTO w_OID_Tut FROM TUTORESLEGALES WHERE dni=w_dniTut;
     Registrar_Persona(w_dni, w_nombre, w_apellidos, w_fechaNacimiento, w_direccion, w_localidad, w_provincia, w_codigoPostal, w_email, w_telefono);
     INSERT INTO PARTICIPANTES (dni, gradoDiscapacidad, prioridadParticipacion, OID_Vol, OID_Tut)
         VALUES (w_dni, w_gradoDiscapacidad, w_prioridadParticipacion, w_OID_Vol, w_OID_Tut);
@@ -261,9 +265,13 @@ w_OID_Rec RECIBOS.OID_Rec%TYPE;
 BEGIN
     SELECT OID_Part INTO w_OID_Part FROM PARTICIPANTES WHERE dni=w_dni;
     SELECT costeInscripcion INTO w_importe FROM ACTIVIDADES WHERE OID_Act=w_OID_Act;
-    Add_ReciboInscripcion(w_OID_Act,w_OID_Part,SYSDATE,w_importe,'pendiente');
-    SELECT OID_Rec INTO w_OID_Rec FROM RECIBOS WHERE OID_Act=w_OID_Act AND OID_Part=w_OID_Part;
-    INSERT INTO INSCRIPCIONES(OID_Part, OID_Act) VALUES (w_OID_Part, w_OID_Act);
+    IF (w_importe<>0) THEN
+        Add_ReciboInscripcion(w_OID_Act,w_OID_Part,SYSDATE,w_importe,'pendiente');
+        SELECT OID_Rec INTO w_OID_Rec FROM RECIBOS WHERE OID_Act=w_OID_Act AND OID_Part=w_OID_Part;
+        INSERT INTO INSCRIPCIONES(OID_Part, OID_Act, OID_Rec) VALUES (w_OID_Part, w_OID_Act, w_OID_Rec);    
+    ELSE
+        INSERT INTO INSCRIPCIONES(OID_Part, OID_Act, OID_Rec) VALUES (w_OID_Part, w_OID_Act, null);
+    END IF;
     COMMIT WORK;
 END Inscribir_Participante;
 /
@@ -420,14 +428,15 @@ END Registrar_Respuesta;
 /
 
 -- Actualizar PREGUNTA de un CUESTIONARIO
-CREATE OR REPLACE PROCEDURE Act_Pregunta (w_OID_Cues IN CUESTIONARIOS.OID_Cues%TYPE, w_OID_Q IN OUT PREGUNTAS.OID_Q%TYPE,
+CREATE OR REPLACE PROCEDURE Act_Pregunta (w_OID_Cues IN CUESTIONARIOS.OID_Cues%TYPE, w_OID_Q IN PREGUNTAS.OID_Q%TYPE,
     w_tipo IN PREGUNTAS.tipo%TYPE, w_enunciado IN PREGUNTAS.enunciado%TYPE) IS
     w_OID_Form FORMULARIOS.OID_Form%TYPE;
+    n_OID_Q PREGUNTAS.OID_Q%TYPE;
 BEGIN
     SELECT OID_Form INTO w_OID_Form FROM FORMULARIOS WHERE OID_Cues=w_OID_Cues AND OID_Q=w_OID_Q;
     Registrar_Pregunta(w_tipo, w_enunciado);
-    w_OID_Q := SEC_Q.CURRVAL;
-    UPDATE FORMULARIOS SET OID_Q=w_OID_Q WHERE OID_Form=w_OID_Form AND OID_Cues=w_OID_Cues;
+    n_OID_Q := SEC_Q.CURRVAL;
+    UPDATE FORMULARIOS SET OID_Q=n_OID_Q WHERE OID_Form=w_OID_Form AND OID_Cues=w_OID_Cues;
     COMMIT WORK;
 END Act_Pregunta;
 /
