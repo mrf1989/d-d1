@@ -1,5 +1,39 @@
 -------------------------------------------------------------------------------
--- PROCEDIMIENTOS y FUNCIONES
+-- FUNCIONES
+-------------------------------------------------------------------------------
+
+-- Función auxiliar para pruebas de paquetes
+CREATE OR REPLACE FUNCTION ASSERT_EQUALS (salida BOOLEAN, salida_esperada BOOLEAN)
+RETURN VARCHAR2 AS 
+BEGIN
+    IF (salida = salida_esperada) THEN
+        RETURN 'EXITO';
+    ELSE
+        RETURN 'FALLO';
+    END IF;
+END ASSERT_EQUALS;
+/
+
+-- Función auxiliar para calcular precio de inscripción a actividad
+CREATE OR REPLACE FUNCTION calcularCosteInscripcion (w_costeTotal IN ACTIVIDADES.costeTotal%TYPE, w_numeroPlazas IN ACTIVIDADES.numeroPlazas%TYPE)
+RETURN NUMBER IS w_costeInscripcion ACTIVIDADES.costeInscripcion%TYPE;
+BEGIN
+    w_costeInscripcion := w_costeTotal / w_numeroPlazas;
+RETURN (w_costeInscripcion);
+END;
+/
+
+-- Función auxiliar para calcular la fecha de vencimiento de pago de un recibo.
+CREATE OR REPLACE FUNCTION calcularFechaVencimiento (w_fechaEmision IN RECIBOS.fechaEmision%TYPE)
+RETURN DATE IS w_fechaVencimiento RECIBOS.fechaVencimiento%TYPE;
+BEGIN
+    SELECT ADD_MONTHS(w_fechaEmision, 2) INTO w_fechaVencimiento FROM DUAL;
+RETURN (w_fechaVencimiento);
+END;
+/
+
+-------------------------------------------------------------------------------
+-- PROCEDIMIENTOS
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -- 1. Registro de personas
@@ -9,13 +43,14 @@
 -- 5. Registro de mensajes y envíos
 -- 6. Registro de informes médicos de participantes
 -- 7. Registro de recibos
+-- 8. Registro de cuestionarios
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -- 1. Registro de personas
 -------------------------------------------------------------------------------
 
--- Registrar COORDINADOR en el sistema de información
-CREATE OR REPLACE PROCEDURE Registrar_Coordinador (w_dni IN PERSONAS.dni%TYPE, w_nombre IN PERSONAS.nombre%TYPE,
+-- Registrar PERSONA en el sistema de información
+CREATE OR REPLACE PROCEDURE Registrar_Persona (w_dni IN PERSONAS.dni%TYPE, w_nombre IN PERSONAS.nombre%TYPE,
     w_apellidos IN PERSONAS.apellidos%TYPE, w_fechaNacimiento IN PERSONAS.fechaNacimiento%TYPE, w_direccion IN
     PERSONAS.direccion%TYPE, w_localidad IN PERSONAS.localidad%TYPE, w_provincia IN PERSONAS.provincia%TYPE,
     w_codigoPostal IN PERSONAS.codigoPostal%TYPE, w_email IN PERSONAS.email%TYPE, w_telefono IN PERSONAS.telefono%TYPE) IS
@@ -23,6 +58,42 @@ BEGIN
     INSERT INTO PERSONAS (dni, nombre, apellidos, fechaNacimiento, direccion, localidad, provincia, codigoPostal,
         email, telefono) VALUES (w_dni, w_nombre, w_apellidos, w_fechaNacimiento, w_direccion, w_localidad, 
         w_provincia, w_codigoPostal, w_email, w_telefono);
+    COMMIT WORK;
+END Registrar_Persona;
+/
+
+-- Actualizar PERSONA en el sistema de información
+CREATE OR REPLACE PROCEDURE Act_Persona (w_dni IN PERSONAS.dni%TYPE, w_nombre IN PERSONAS.nombre%TYPE,
+    w_apellidos IN PERSONAS.apellidos%TYPE, w_fechaNacimiento IN PERSONAS.fechaNacimiento%TYPE, w_direccion IN
+    PERSONAS.direccion%TYPE, w_localidad IN PERSONAS.localidad%TYPE, w_provincia IN PERSONAS.provincia%TYPE,
+    w_codigoPostal IN PERSONAS.codigoPostal%TYPE, w_email IN PERSONAS.email%TYPE, w_telefono IN PERSONAS.telefono%TYPE) IS
+BEGIN
+    UPDATE PERSONAS SET nombre=w_nombre, apellidos=w_apellidos, fechaNacimiento=w_fechaNacimiento, direccion=w_direccion,
+        localidad=w_localidad, provincia=w_provincia, codigoPostal=w_codigoPostal,email=w_email, telefono=w_telefono
+    WHERE dni=w_dni;
+    COMMIT WORK;
+END Act_Persona;
+/
+
+-- Eliminar PERSONA (con efecto cascada) en el sistema de información
+CREATE OR REPLACE PROCEDURE Eliminar_Persona (w_dni IN PERSONAS.dni%TYPE) IS
+    dniPersona PERSONAS.dni%TYPE;
+BEGIN
+    SELECT dni INTO dniPersona FROM PERSONAS WHERE dni=w_dni;
+    IF (dniPersona=w_dni) THEN
+        DELETE FROM PERSONAS WHERE dni=w_dni;
+    END IF;
+    COMMIT WORK;
+END Eliminar_Persona;
+/
+
+-- Registrar COORDINADOR en el sistema de información
+CREATE OR REPLACE PROCEDURE Registrar_Coordinador (w_dni IN PERSONAS.dni%TYPE, w_nombre IN PERSONAS.nombre%TYPE,
+    w_apellidos IN PERSONAS.apellidos%TYPE, w_fechaNacimiento IN PERSONAS.fechaNacimiento%TYPE, w_direccion IN
+    PERSONAS.direccion%TYPE, w_localidad IN PERSONAS.localidad%TYPE, w_provincia IN PERSONAS.provincia%TYPE,
+    w_codigoPostal IN PERSONAS.codigoPostal%TYPE, w_email IN PERSONAS.email%TYPE, w_telefono IN PERSONAS.telefono%TYPE) IS
+BEGIN
+    Registrar_Persona(w_dni, w_nombre, w_apellidos, w_fechaNacimiento, w_direccion, w_localidad, w_provincia, w_codigoPostal, w_email, w_telefono);
     INSERT INTO COORDINADORES (dni) VALUES (w_dni);
     COMMIT WORK;
 END Registrar_Coordinador;
@@ -35,9 +106,7 @@ CREATE OR REPLACE PROCEDURE Registrar_Voluntario (w_dni IN PERSONAS.dni%TYPE, w_
     w_codigoPostal IN PERSONAS.codigoPostal%TYPE, w_email IN PERSONAS.email%TYPE, w_telefono IN PERSONAS.telefono%TYPE,
     w_prioridadParticipacion IN VOLUNTARIOS.prioridadParticipacion%TYPE) IS
 BEGIN
-    INSERT INTO PERSONAS (dni, nombre, apellidos, fechaNacimiento, direccion, localidad, provincia, codigoPostal,
-        email, telefono) VALUES (w_dni, w_nombre, w_apellidos, w_fechaNacimiento, w_direccion, w_localidad, 
-        w_provincia, w_codigoPostal, w_email, w_telefono);
+    Registrar_Persona(w_dni, w_nombre, w_apellidos, w_fechaNacimiento, w_direccion, w_localidad, w_provincia, w_codigoPostal, w_email, w_telefono);
     INSERT INTO VOLUNTARIOS (dni, prioridadParticipacion) VALUES (w_dni, w_prioridadParticipacion);
     COMMIT WORK;
 END Registrar_Voluntario;
@@ -49,9 +118,7 @@ CREATE OR REPLACE PROCEDURE Registrar_TutorLegal (w_dni IN PERSONAS.dni%TYPE, w_
     PERSONAS.direccion%TYPE, w_localidad IN PERSONAS.localidad%TYPE, w_provincia IN PERSONAS.provincia%TYPE,
     w_codigoPostal IN PERSONAS.codigoPostal%TYPE, w_email IN PERSONAS.email%TYPE, w_telefono IN PERSONAS.telefono%TYPE) IS
 BEGIN
-    INSERT INTO PERSONAS (dni, nombre, apellidos, fechaNacimiento, direccion, localidad, provincia, codigoPostal,
-        email, telefono) VALUES (w_dni, w_nombre, w_apellidos, w_fechaNacimiento, w_direccion, w_localidad, 
-        w_provincia, w_codigoPostal, w_email, w_telefono);
+    Registrar_Persona(w_dni, w_nombre, w_apellidos, w_fechaNacimiento, w_direccion, w_localidad, w_provincia, w_codigoPostal, w_email, w_telefono);
     INSERT INTO TUTORESLEGALES (dni) VALUES (w_dni);
     COMMIT WORK;
 END Registrar_TutorLegal;
@@ -65,9 +132,7 @@ CREATE OR REPLACE PROCEDURE Registrar_Participante (w_dni IN PERSONAS.dni%TYPE, 
     w_gradoDiscapacidad IN PARTICIPANTES.gradoDiscapacidad%TYPE, w_prioridadParticipacion IN PARTICIPANTES.prioridadParticipacion%TYPE,
     w_OID_Vol IN PARTICIPANTES.OID_Vol%TYPE, w_OID_Tut IN PARTICIPANTES.OID_Tut%TYPE) IS
 BEGIN
-    INSERT INTO PERSONAS (dni, nombre, apellidos, fechaNacimiento, direccion, localidad, provincia, codigoPostal,
-        email, telefono) VALUES (w_dni, w_nombre, w_apellidos, w_fechaNacimiento, w_direccion, w_localidad, 
-        w_provincia, w_codigoPostal, w_email, w_telefono);
+    Registrar_Persona(w_dni, w_nombre, w_apellidos, w_fechaNacimiento, w_direccion, w_localidad, w_provincia, w_codigoPostal, w_email, w_telefono);
     INSERT INTO PARTICIPANTES (dni, gradoDiscapacidad, prioridadParticipacion, OID_Vol, OID_Tut)
         VALUES (w_dni, w_gradoDiscapacidad, w_prioridadParticipacion, w_OID_Vol, w_OID_Tut);
     COMMIT WORK;
@@ -77,6 +142,40 @@ END Registrar_Participante;
 -------------------------------------------------------------------------------
 -- 2. Registro de patrocinadores, patrocinios y donaciones
 -------------------------------------------------------------------------------
+
+-- Registrar INSTITUCION en el sistema de información
+CREATE OR REPLACE PROCEDURE Registrar_Institucion (w_cif IN INSTITUCIONES.cif%TYPE, w_nombre IN INSTITUCIONES.nombre%TYPE,
+    w_telefono IN INSTITUCIONES.telefono%TYPE, w_direccion IN INSTITUCIONES.direccion%TYPE, w_localidad IN INSTITUCIONES.localidad%TYPE,
+    w_provincia IN INSTITUCIONES.provincia%TYPE, w_codigoPostal IN INSTITUCIONES.codigoPostal%TYPE, w_email IN INSTITUCIONES.email%TYPE) IS
+BEGIN
+    INSERT INTO INSTITUCIONES VALUES (w_cif, w_nombre, w_telefono, w_direccion, w_localidad, w_provincia, w_codigoPostal, w_email, 0, null);
+    COMMIT WORK;
+END Registrar_Institucion;
+/
+
+-- Actualizar INSTITUCION en el sistema de información
+CREATE OR REPLACE PROCEDURE Act_Institucion (w_cif IN INSTITUCIONES.cif%TYPE, w_nombre IN INSTITUCIONES.nombre%TYPE,
+    w_telefono IN INSTITUCIONES.telefono%TYPE, w_direccion IN INSTITUCIONES.direccion%TYPE, w_localidad IN INSTITUCIONES.localidad%TYPE,
+    w_provincia IN INSTITUCIONES.provincia%TYPE, w_codigoPostal IN INSTITUCIONES.codigoPostal%TYPE, w_email IN INSTITUCIONES.email%TYPE) IS
+BEGIN
+    UPDATE INSTITUCIONES SET nombre=w_nombre, telefono=w_telefono, direccion=w_direccion, localidad=w_localidad, provincia=w_provincia,
+        codigoPostal=w_codigoPostal, email=w_email
+    WHERE cif=w_cif;
+    COMMIT WORK;
+END Act_Institucion;
+/
+
+-- Eliminar INSTITUCION en el sistema de información
+CREATE OR REPLACE PROCEDURE Eliminar_Institucion (w_cif IN INSTITUCIONES.cif%TYPE) IS
+    cifPatrocinador INSTITUCIONES.cif%TYPE;
+BEGIN
+    SELECT cif INTO cifPatrocinador FROM INSTITUCIONES WHERE cif=w_cif;
+    IF (cifPatrocinador=w_cif) THEN
+        DELETE FROM INSTITUCIONES WHERE cif=w_cif;
+    END IF;
+    COMMIT WORK;
+END Eliminar_Institucion;
+/
 
 -- Registrar PATROCINADOR en el sistema de información
 CREATE OR REPLACE PROCEDURE Registrar_Patrocinador (w_cif IN INSTITUCIONES.cif%TYPE, w_nombre IN INSTITUCIONES.nombre%TYPE,
@@ -135,15 +234,6 @@ BEGIN
     INSERT INTO ENCARGADOS(OID_Proj, OID_Coord) VALUES (w_OID_Proj, w_OID_Coord);
     COMMIT WORK;
 END Registrar_Proyecto;
-/
-
--- -- Función auxiliar: calcular precio de inscripción a actividad.
-CREATE OR REPLACE FUNCTION calcularCosteInscripcion (w_costeTotal IN ACTIVIDADES.costeTotal%TYPE, w_numeroPlazas IN ACTIVIDADES.numeroPlazas%TYPE)
-RETURN NUMBER IS w_costeInscripcion ACTIVIDADES.costeInscripcion%TYPE;
-BEGIN
-    w_costeInscripcion := w_costeTotal / w_numeroPlazas;
-RETURN (w_costeInscripcion);
-END;
 /
 
 -- AÑADIR ACTIVIDAD a PROYECTO en el sistema de información
@@ -271,15 +361,6 @@ END Add_InformeMedico;
 -- 7. Registro de recibos
 -------------------------------------------------------------------------------
 
--- -- Función auxiliar: calcula la fecha de vencimiento de pago de un recibo.
-CREATE OR REPLACE FUNCTION calcularFechaVencimiento (w_fechaEmision IN RECIBOS.fechaEmision%TYPE)
-RETURN DATE IS w_fechaVencimiento RECIBOS.fechaVencimiento%TYPE;
-BEGIN
-    SELECT ADD_MONTHS(w_fechaEmision, 2) INTO w_fechaVencimiento FROM DUAL;
-RETURN (w_fechaVencimiento);
-END;
-/
-
 -- Registrar RECIBO de INSCRIPCION en el sistema de información
 CREATE OR REPLACE PROCEDURE Add_ReciboInscripcion (w_OID_Act IN ACTIVIDADES.OID_Act%TYPE, w_OID_Part IN PARTICIPANTES.OID_Part%TYPE,
     w_fechaEmision IN RECIBOS.fechaEmision%TYPE, w_importe IN RECIBOS.importe%TYPE, w_estado IN RECIBOS.estado%TYPE) IS
@@ -305,30 +386,48 @@ END Act_Recibo;
 -- 8. Registro de cuestionarios
 -------------------------------------------------------------------------------
 
--------------------------------------------------------------------------------
--- Eliminación del sistema de información
--------------------------------------------------------------------------------
-
--- Eliminar PERSONA (con efecto cascada) en el sistema de información
-CREATE OR REPLACE PROCEDURE Eliminar_Persona (w_dni IN PERSONAS.dni%TYPE) IS
-    dniPersona PERSONAS.dni%TYPE;
+-- Registrar PREGUNTA en el sistema de información
+CREATE OR REPLACE PROCEDURE Registrar_Pregunta (w_tipo IN PREGUNTAS.tipo%TYPE, w_enunciado IN PREGUNTAS.enunciado%TYPE) IS
 BEGIN
-    SELECT dni INTO dniPersona FROM PERSONAS WHERE dni=w_dni;
-    IF (dniPersona=w_dni) THEN
-        DELETE FROM PERSONAS WHERE dni=w_dni;
-    END IF;
+    INSERT INTO PREGUNTAS (tipo, enunciado) VALUES (w_tipo, w_enunciado);
     COMMIT WORK;
-END Eliminar_Persona;
+END Registrar_Pregunta;
 /
 
--- Eliminar PATROCINADOR en el sistema de información
-CREATE OR REPLACE PROCEDURE Eliminar_Patrocinador (w_cif IN INSTITUCIONES.cif%TYPE) IS
-    cifPatrocinador INSTITUCIONES.cif%TYPE;
+-- Registrar CUESTIONARIO en el sistema de información
+CREATE OR REPLACE PROCEDURE Registrar_Cuestionario (w_OID_Act IN CUESTIONARIOS.OID_Act%TYPE) IS
 BEGIN
-    SELECT cif INTO cifPatrocinador FROM INSTITUCIONES WHERE cif=w_cif;
-    IF (cifPatrocinador=w_cif) THEN
-        DELETE FROM INSTITUCIONES WHERE cif=w_cif;
-    END IF;
+    INSERT INTO CUESTIONARIOS (fechaCreacion, OID_Act) VALUES (SYSDATE, w_OID_Act);
     COMMIT WORK;
-END Eliminar_Patrocinador;
+END Registrar_Cuestionario;
+/
+
+-- Añadir PREGUNTA a CUESTIONARIO en el sistema de información
+CREATE OR REPLACE PROCEDURE Add_Formulario (w_OID_Q IN PREGUNTAS.OID_Q%TYPE, w_OID_Cues IN CUESTIONARIOS.OID_Cues%TYPE) IS
+BEGIN
+    INSERT INTO FORMULARIOS (OID_Cues, OID_Q) VALUES (w_OID_Cues, w_OID_Q);
+    COMMIT WORK;
+END Add_Formulario;
+/
+
+-- Registrar RESPUESTA a PREGUNTA de un CUESTIONARIO
+CREATE OR REPLACE PROCEDURE Registrar_Respuesta (w_OID_Vol IN VOLUNTARIOS.OID_Vol%TYPE, w_OID_Part IN PARTICIPANTES.OID_Part%TYPE,
+    w_OID_Form IN FORMULARIOS.OID_Form%TYPE, w_contenido IN RESPUESTAS.contenido%TYPE) IS
+BEGIN
+    INSERT INTO RESPUESTAS (OID_Vol, OID_Part, OID_Form, contenido) VALUES (w_OID_Vol, w_OID_Part, w_OID_Form, w_contenido);
+    COMMIT WORK;
+END Registrar_Respuesta;
+/
+
+-- Actualizar PREGUNTA de un CUESTIONARIO
+CREATE OR REPLACE PROCEDURE Act_Pregunta (w_OID_Cues IN CUESTIONARIOS.OID_Cues%TYPE, w_OID_Q IN OUT PREGUNTAS.OID_Q%TYPE,
+    w_tipo IN PREGUNTAS.tipo%TYPE, w_enunciado IN PREGUNTAS.enunciado%TYPE) IS
+    w_OID_Form FORMULARIOS.OID_Form%TYPE;
+BEGIN
+    SELECT OID_Form INTO w_OID_Form FROM FORMULARIOS WHERE OID_Cues=w_OID_Cues AND OID_Q=w_OID_Q;
+    Registrar_Pregunta(w_tipo, w_enunciado);
+    w_OID_Q := SEC_Q.CURRVAL;
+    UPDATE FORMULARIOS SET OID_Q=w_OID_Q WHERE OID_Form=w_OID_Form AND OID_Cues=w_OID_Cues;
+    COMMIT WORK;
+END Act_Pregunta;
 /
