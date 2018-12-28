@@ -2,7 +2,7 @@
 -- PROCEDIMIENTOS y FUNCIONES
 -------------------------------------------------------------------------------
 
--- Registro de COORDINADORES en el sistema de información
+-- Registrar COORDINADOR en el sistema de información
 CREATE OR REPLACE PROCEDURE Registrar_Coordinador (w_dni IN PERSONAS.dni%TYPE, w_nombre IN PERSONAS.nombre%TYPE,
     w_apellidos IN PERSONAS.apellidos%TYPE, w_fechaNacimiento IN PERSONAS.fechaNacimiento%TYPE, w_direccion IN
     PERSONAS.direccion%TYPE, w_localidad IN PERSONAS.localidad%TYPE, w_provincia IN PERSONAS.provincia%TYPE,
@@ -16,17 +16,7 @@ BEGIN
 END Registrar_Coordinador;
 /
 
-CREATE OR REPLACE PROCEDURE Eliminar_Coordinador (w_dni CHAR) IS
-    persona PERSONAS%ROWTYPE;
-BEGIN
-    SELECT * INTO persona FROM PERSONAS WHERE dni=w_dni;
-    IF (persona.dni=w_dni) THEN
-        DELETE FROM PERSONAS WHERE dni=w_dni;
-    END IF;
-END;
-/
-
--- Registro de VOLUNTARIOS en el sistema de información
+-- Registrar VOLUNTARIO en el sistema de información
 CREATE OR REPLACE PROCEDURE Registrar_Voluntario (w_dni IN PERSONAS.dni%TYPE, w_nombre IN PERSONAS.nombre%TYPE,
     w_apellidos IN PERSONAS.apellidos%TYPE, w_fechaNacimiento IN PERSONAS.fechaNacimiento%TYPE, w_direccion IN
     PERSONAS.direccion%TYPE, w_localidad IN PERSONAS.localidad%TYPE, w_provincia IN PERSONAS.provincia%TYPE,
@@ -41,7 +31,7 @@ BEGIN
 END Registrar_Voluntario;
 /
 
--- Registro de TUTORES LEGALES en el sistema de información
+-- Registrar TUTOR LEGAL en el sistema de información
 CREATE OR REPLACE PROCEDURE Registrar_TutorLegal (w_dni IN PERSONAS.dni%TYPE, w_nombre IN PERSONAS.nombre%TYPE,
     w_apellidos IN PERSONAS.apellidos%TYPE, w_fechaNacimiento IN PERSONAS.fechaNacimiento%TYPE, w_direccion IN
     PERSONAS.direccion%TYPE, w_localidad IN PERSONAS.localidad%TYPE, w_provincia IN PERSONAS.provincia%TYPE,
@@ -55,7 +45,7 @@ BEGIN
 END Registrar_TutorLegal;
 /
 
--- Registro de PARTICIPANTES en el sistema de información
+-- Registrar PARTICIPANTE en el sistema de información
 CREATE OR REPLACE PROCEDURE Registrar_Participante (w_dni IN PERSONAS.dni%TYPE, w_nombre IN PERSONAS.nombre%TYPE,
     w_apellidos IN PERSONAS.apellidos%TYPE, w_fechaNacimiento IN PERSONAS.fechaNacimiento%TYPE, w_direccion IN
     PERSONAS.direccion%TYPE, w_localidad IN PERSONAS.localidad%TYPE, w_provincia IN PERSONAS.provincia%TYPE,
@@ -70,6 +60,76 @@ BEGIN
         VALUES (w_dni, w_gradoDiscapacidad, w_prioridadParticipacion, w_OID_Vol, w_OID_Tut);
     COMMIT WORK;
 END Registrar_Participante;
+/
+
+-- Registrar PATROCINADOR en el sistema de información
+CREATE OR REPLACE PROCEDURE Registrar_Patrocinador (w_cif IN INSTITUCIONES.cif%TYPE, w_nombre IN INSTITUCIONES.nombre%TYPE,
+    w_telefono IN INSTITUCIONES.telefono%TYPE, w_direccion IN INSTITUCIONES.direccion%TYPE, w_localidad IN INSTITUCIONES.localidad%TYPE,
+    w_provincia IN INSTITUCIONES.provincia%TYPE, w_codigoPostal IN INSTITUCIONES.codigoPostal%TYPE, w_email IN INSTITUCIONES.email%TYPE,
+    w_tipo IN INSTITUCIONES.tipo%TYPE) IS
+BEGIN
+    INSERT INTO INSTITUCIONES VALUES (w_cif, w_nombre, w_telefono, w_direccion, w_localidad, w_provincia, w_codigoPostal, w_email, 1, w_tipo);
+    COMMIT WORK;
+END Registrar_Patrocinador;
+/
+
+-- Registrar DONACION en el sistema de información
+CREATE OR REPLACE PROCEDURE Registrar_Donacion (w_dni IN PERSONAS.dni%TYPE, w_cif IN INSTITUCIONES.cif%TYPE, w_nombre IN TIPODONACIONES.nombre%TYPE,
+    w_tipoUnidad IN TIPODONACIONES.tipoUnidad%TYPE, w_cantidad IN DONACIONES.cantidad%TYPE, w_valorUnitario IN DONACIONES.valorUnitario%TYPE) IS
+    tipoDonacion TIPODONACIONES%ROWTYPE;
+    w_OID_TDon INTEGER;
+BEGIN
+    SELECT OID_TDon INTO w_OID_TDon FROM TIPODONACIONES WHERE nombre=w_nombre AND tipoUnidad=w_tipoUnidad;
+    IF (w_OID_TDon>0) THEN
+        INSERT INTO DONACIONES(cantidad, valorUnitario, dni, cif, OID_TDon) VALUES (w_cantidad, w_valorUnitario, w_dni, w_cif, w_OID_TDon);
+    END IF;
+    COMMIT WORK;
+    
+    EXCEPTION
+    WHEN OTHERS THEN
+        INSERT INTO TIPODONACIONES(nombre, tipoUnidad) VALUES (w_nombre, w_tipoUnidad);
+        SELECT OID_TDon INTO w_OID_TDon FROM TIPODONACIONES WHERE nombre=w_nombre AND tipoUnidad=w_tipoUnidad;
+        INSERT INTO DONACIONES(cantidad, valorUnitario, dni, cif, OID_TDon) VALUES (w_cantidad, w_valorUnitario, w_dni, w_cif, w_OID_TDon);
+    COMMIT WORK;
+END Registrar_Donacion;
+/
+
+-- Registrar PROYECTO por un COORDINADOR en el sistema de información
+CREATE OR REPLACE PROCEDURE Registrar_Proyecto (w_dni IN PERSONAS.dni%TYPE, w_nombre IN PROYECTOS.nombre%TYPE, w_ubicacion IN PROYECTOS.ubicacion%TYPE,
+    w_esEvento IN PROYECTOS.esEvento%TYPE, w_esProgDep IN PROYECTOS.esProgDep%TYPE) IS
+    w_OID_Coord INTEGER;
+    w_OID_Proj INTEGER;
+BEGIN
+    INSERT INTO PROYECTOS(nombre, ubicacion, esEvento, esProgDep) VALUES (w_nombre, w_ubicacion, w_esEvento, w_esProgDep);
+    w_OID_Proj := SEC_Proj.CURRVAL;
+    w_OID_Coord := SEC_Coord.CURRVAL;
+    INSERT INTO ENCARGADOS(OID_Proj, OID_Coord) VALUES (w_OID_Proj, w_OID_Coord);
+    COMMIT WORK;
+END Registrar_Proyecto;
+/
+
+-- Eliminar PERSONA (con efecto cascada) en el sistema de información
+CREATE OR REPLACE PROCEDURE Eliminar_Persona (w_dni IN PERSONAS.dni%TYPE) IS
+    persona PERSONAS%ROWTYPE;
+BEGIN
+    SELECT * INTO persona FROM PERSONAS WHERE dni=w_dni;
+    IF (persona.dni=w_dni) THEN
+        DELETE FROM PERSONAS WHERE dni=w_dni;
+    END IF;
+    COMMIT WORK;
+END Eliminar_Persona;
+/
+
+-- Eliminar PATROCINADOR en el sistema de información
+CREATE OR REPLACE PROCEDURE Eliminar_Patrocinador (w_cif IN INSTITUCIONES.cif%TYPE) IS
+    patrocinador INSTITUCIONES%ROWTYPE;
+BEGIN
+    SELECT * INTO patrocinador FROM INSTITUCIONES WHERE cif=w_cif;
+    IF (patrocinador.cif=w_cif) THEN
+        DELETE FROM INSTITUCIONES WHERE cif=w_cif;
+    END IF;
+    COMMIT WORK;
+END Eliminar_Patrocinador;
 /
 
 -- Registro de mensajes en el sistema de información
