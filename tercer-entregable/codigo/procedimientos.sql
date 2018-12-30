@@ -209,7 +209,7 @@ CREATE OR REPLACE PROCEDURE Registrar_Donacion (w_dni IN PERSONAS.dni%TYPE, w_ci
 BEGIN
     SELECT OID_TDon INTO w_OID_TDon FROM TIPODONACIONES WHERE nombre=w_nombre AND tipoUnidad=w_tipoUnidad;
     IF (w_OID_TDon>0) THEN
-        INSERT INTO DONACIONES(cantidad, valorUnitario, dni, cif, OID_TDon) VALUES (w_cantidad, w_valorUnitario, w_dni, w_cif, w_OID_TDon);
+        INSERT INTO DONACIONES(fecha, cantidad, valorUnitario, dni, cif, OID_TDon) VALUES (SYSDATE, w_cantidad, w_valorUnitario, w_dni, w_cif, w_OID_TDon);
     END IF;
     COMMIT WORK;
     
@@ -217,7 +217,7 @@ BEGIN
     WHEN OTHERS THEN
         INSERT INTO TIPODONACIONES(nombre, tipoUnidad) VALUES (w_nombre, w_tipoUnidad);
         SELECT OID_TDon INTO w_OID_TDon FROM TIPODONACIONES WHERE nombre=w_nombre AND tipoUnidad=w_tipoUnidad;
-        INSERT INTO DONACIONES(cantidad, valorUnitario, dni, cif, OID_TDon) VALUES (w_cantidad, w_valorUnitario, w_dni, w_cif, w_OID_TDon);
+        INSERT INTO DONACIONES(fecha, cantidad, valorUnitario, dni, cif, OID_TDon) VALUES (SYSDATE, w_cantidad, w_valorUnitario, w_dni, w_cif, w_OID_TDon);
     COMMIT WORK;
 END Registrar_Donacion;
 /
