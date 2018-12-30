@@ -208,6 +208,7 @@ CREATE TABLE DONACIONES (
     cif CHAR(9),
     dni CHAR(9),
     OID_TDon INTEGER NOT NULL,
+    fecha DATE NOT NULL,
     cantidad NUMBER(*,2) NOT NULL,
     valorUnitario NUMBER(*,2) NOT NULL,
     FOREIGN KEY (cif) REFERENCES INSTITUCIONES,
