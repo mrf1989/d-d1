@@ -7,15 +7,17 @@ CREATE OR REPLACE TRIGGER PAGOS_PENDIENTES
 BEFORE INSERT ON INSCRIPCIONES
 FOR EACH ROW
 DECLARE 
-pago VARCHAR2;
+CURSOR c_pagos IS SELECT * FROM RECIBOS WHERE OID_Part=:NEW.OID_Part
 BEGIN
-SELECT (estado) INTO pago FROM RECIBOS
-IF (pago = 'pendiente') THEN 
-  raise_application_error
-  (-20600 || 'El participante tiene pagos pendientes');
-  END IF;
-  END
-  
+FOR RECIBO IN c_pagos LOOP
+    IF (RECIBO.estado = 'pendiente') THEN 
+    raise_application_error
+    (-20600 || 'El participante tiene pagos pendientes');
+     END IF;
+  END LOOP;
+END;
+/
+
 CREATE OR REPLACE TRIGGER REPRESENTANTE_LEGAL
 BEFORE INSERT ON PARTICIPANTES
 FOR EACH ROW
@@ -87,7 +89,7 @@ DECLARE
 fecha DATE;
 BEGIN
 SELECT (fechaCreacion) INTO fecha FROM CUESTIONARIOS
-IF (SYSDATE NOT BETWEEN fecha AND DATEADD(day,15,fecha))
+IF (SYSDATE NOT BETWEEN fecha AND DATEADD(day,15,fecha)) THEN
 raise_application_error
   (-20602 || 'Solo puede enviar el formulario 15 días después de que este sea creado');
 END IF
@@ -95,7 +97,3 @@ END
 
 CREATE OR REPLACE TRIGGER GRADO_DISCAPACIDAD
 -- HECHO CON CONSTRAINT
-
-
-
-
