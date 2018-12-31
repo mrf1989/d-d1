@@ -265,3 +265,13 @@ EXEC Add_Formulario(2, 2);
 EXEC Registrar_Respuesta(1, null, 1, 'Contar con una segunda pista de baloncesto para poder tener a más equipos jugando al mismo tiempo.');
 EXEC Registrar_Respuesta(null, 1, 2, '8');
 EXEC Act_Pregunta(1, 2, 'opcional', 'Eliga los tenderetes que más le gustaron');
+
+-------------------------------------------------------------------------------
+-- PRUEBAS de CURSORES
+-------------------------------------------------------------------------------
+EXEC FichaParticipante(1);
+EXEC FichaVoluntario(1);
+EXEC FichaPatrocinador('A87674532');
+--EXEC FichaDonante(57153559V);
+EXEC DonacionesPorFecha('01/01/2018','31/12/2018');
+EXEC ActsPorFecha('01/01/2018','31/12/2018');
