@@ -211,11 +211,13 @@ END;
 BEGIN
 DBMS_OUTPUT.PUT_LINE(calcularCosteInscripcion(1500, 45));
 END;
+/
 
 -- Calcular fecha de vencimiento de pago de recibo
 BEGIN
 DBMS_OUTPUT.PUT_LINE(calcularFechaVencimiento(SYSDATE));
 END;
+/
 
 -------------------------------------------------------------------------------
 -- PRUEBAS de PROCEDIMIENTOS
@@ -226,34 +228,29 @@ EXEC Registrar_Persona('89321345B', 'Pedro', 'López Durán', '23/03/1986', 'C/ La
 EXEC Act_Persona('12345678A', 'María', 'Núñez Ortiz', '22/10/1990', 'Avd. Kansas City, 12, 4ºC', 'Sevilla', 'Sevilla', '41007', 'maria_nuo@gmail.com', '645234184');
 EXEC Eliminar_Persona('89321345B');
 EXEC Registrar_Coordinador('98385816W', 'Cristina', 'Caro Caro', '15/08/1991', 'C/ Vallehermoso, 62, 1ºA', 'Madrid', 'Madrid', '28023', 'ccaroc@deporteydesafio.com', '629123456');
-EXEC Registrar_Voluntario('23987795C', 'Pablo', 'Cabello Marín', '11/11/1982', 'C/ Narciso, 46, 8ºA', 'Madrid', 'Madrid', '28015', 'cabello_marin@gmail.com', '658679123', 'alta');
+EXEC Registrar_Voluntario('23987795C', 'Pablo', 'Cabello Marín', '11/11/1982', 'C/ Narciso, 46, 8ºA', 'Madrid', 'Madrid', '28015', 'cabello_marin@gmail.com', '658679123');
+EXEC Registrar_Voluntario('23987888C', 'Pedro', 'Castaño Moreno', '23/11/1984', 'C/ Lorenzo, 57, 1ºA', 'Madrid', 'Madrid', '28015', 'petercamo@gmail.com', '688132231');
 EXEC Registrar_TutorLegal('57153559V', 'Mateo', 'Ruiz López', '06/02/1978', 'C/ Miguel Hernández, 27, 2ºB', 'Madrid', 'Madrid', '28017', 'mateo_ruiz_lopez@gmail.com', '614888909');
-EXEC Registrar_Participante('64090012E', 'Alicia', 'Torcal Molar', '17/09/2004', 'C/ Cerezo, 2, 4ºC', 'Madrid', 'Madrid', '28086', null, '623168465', '0,45', 'alta', '23987795C', '57153559V');
+EXEC Registrar_Participante('64090012E', 'Alicia', 'Torcal Molar', '17/09/2006', 'C/ Cerezo, 2, 4ºC', 'Madrid', 'Madrid', '28086', null, '623168465', '0,45', '23987795C', '57153559V');
 EXEC Registrar_Institucion('A87674532', 'El Corte Inglés, S.A.', '654123987', 'C/ Preciados, 1', 'Madrid', 'Madrid', '28001', 'contacto@elcorteingles.com');
 EXEC Act_Institucion('A87674532', 'El Corte Inglés, S.A.', '654123989', 'C/ Preciados, 1', 'Madrid', 'Madrid', '28001', 'info@elcorteingles.com');
 EXEC Eliminar_Institucion('A87674532');
 EXEC Registrar_Proyecto('98385816W', 'Mercadillo de Navidad', 'Mercado de Canal, Madrid', 1, 0);
 EXEC Registrar_Proyecto('98385816W', 'Baloncesto Adaptado 2018', 'Centro Deportivo Pío Baroja, Madrid', 0, 1);
 EXEC Add_Actividad('Mercadillo de Navidad', 'Mejorar la integración social de las personas con discapacidad', '27/12/2018', '27/12/2018', 30, 'social', 0, 1);
-EXEC Add_Actividad('Campeonato 3x3 Basket adaptado', 'Ayudar a la mejora de la condición física de los participantes', '28/12/2018', '23/12/2018', 45, 'deportiva', 750, 2);
-EXEC Registrar_Patrocinador('A87674532', 'El Corte Inglés, S.A.', '654123989', 'C/ Preciados, 1', 'Madrid', 'Madrid', '28001', 'info@elcorteingles.com', 'oro');
+EXEC Add_Actividad('Campeonato 3x3 Basket adaptado', 'Ayudar a la mejora de la condición física de los participantes', '23/12/2018', '28/12/2018', 45, 'deportiva', 750, 2);
+EXEC Registrar_Patrocinador('A87674532', 'El Corte Inglés, S.A.', '654123989', 'C/ Preciados, 1', 'Madrid', 'Madrid', '28001', 'info@elcorteingles.com');
 EXEC Add_Patrocinio('A87674532', 2, 500);
 EXEC Registrar_Donacion('12345678A', null, 'Equipaciones de esquí', 'equipaciones', 10, '49,90');
+EXEC Add_InformeMedico(1, 'Problemas respiratorios derivados de la fibrosisquística. Debe tomar la medicación prescrita rigurosamente.');
 EXEC Inscribir_Participante('64090012E', 1);
 EXEC Inscribir_Participante('64090012E', 2);
 EXEC Inscribir_Voluntario('23987795C', 2);
-EXEC Add_InteresVoluntariado('23987795C', 1, 1);
-EXEC Add_InteresVoluntariado('23987795C', 2, 1);
-EXEC Act_InteresVoluntariado('23987795C', 1, 0);
-EXEC Add_InteresParticipante('64090012E', 1, 1);
-EXEC Add_InteresParticipante('64090012E', 2, 0);
-EXEC Act_InteresParticipante('64090012E', 2, 1);
 EXEC Registrar_Mensaje('newsletter', '26/12/2018','¡Llega el Mercadillo de Navidad!', 'Código HTML de la newsletter', 1);
 EXEC Registrar_Envio('12345678A', null, 1);
 EXEC Registrar_Envio('23987795C', null, 1);
 EXEC Registrar_Envio('57153559V', null, 1);
 EXEC Registrar_Envio(null, 'A87674532', 1);
-EXEC Add_InformeMedico('Descripción del informe médico completa', '14/05/2018', 1);
 EXEC Act_Recibo(1, '28/02/2019', '10,00', 'pagado');
 EXEC Registrar_Pregunta('textual', '¿Qué sugerencias haría para mejorar la actividad de cara a futuras ediciones?');
 EXEC Registrar_Pregunta('numerica', 'Valore de 0 a 10 el evento');
@@ -269,9 +266,44 @@ EXEC Act_Pregunta(1, 2, 'opcional', 'Eliga los tenderetes que más le gustaron');
 -------------------------------------------------------------------------------
 -- PRUEBAS de CURSORES
 -------------------------------------------------------------------------------
+
 EXEC FichaParticipante(1);
 EXEC FichaVoluntario(1);
 EXEC FichaPatrocinador('A87674532');
 --EXEC FichaDonante(57153559V);
 EXEC DonacionesPorFecha('01/01/2018','31/12/2018');
 EXEC ActsPorFecha('01/01/2018','31/12/2018');
+
+-------------------------------------------------------------------------------
+-- PRUEBAS de TRIGGERS
+-------------------------------------------------------------------------------
+
+-- RN-3 PAGOS_PENDIENTES
+BEGIN
+    Add_Actividad('Campeonato de tiros libres','Ayudar a la mejora de la condición física de los participantes','05/01/2019','06/01/2019',35,'deportiva',600,2);
+    Act_Recibo(1, '28/02/2019', '10,00', 'pendiente');
+    Inscribir_Participante('64090012E',3);
+END;
+/
+
+-- RN-4 REPRESENTANTE_LEGAL
+EXEC Registrar_Participante('64091933E', 'Pilar', 'Valero Romero', '17/09/1989', 'C/ Lienzos, 25, 6ºC', 'Madrid', 'Madrid', '28086', null, '669557668', '0,3', '23987795C', NULL);
+EXEC Registrar_Participante('64090018X', 'Marcos', 'Almagro Gila', '25/02/1993', 'C/ Dilima, 13, 1ºB', 'Madrid', 'Madrid', '28086', null, '655111030', '0,75', NULL, NULL);
+EXEC Registrar_Participante('64090010M', 'Antonia María', 'Torcal Molar', '10/09/2003', 'C/ Cerezo, 2, 4ºC', 'Madrid', 'Madrid', '28086', null, '623168465', '0,2', NULL, NULL);
+EXEC Registrar_Participante('64090011J', 'Alejandro', 'Toledo Encina', '11/11/2010', 'C/ Milagros, 6, 2ºC', 'Madrid', 'Madrid', '28086', null, '646599121', '0,7', NULL, NULL);
+
+-- RN-1 PRIORIDAD_PARTICIPACION
+DECLARE
+    interes ESTAINTERESADOEN.estado%TYPE;
+    w_dni CHAR(9);
+    w_OID_Part INTEGER;
+BEGIN
+    w_dni:='64090033E';
+    SELECT OID_Part INTO w_OID_Part FROM PARTICIPANTES WHERE dni=w_dni;
+    SELECT estado INTO interes FROM ESTAINTERESADOEN WHERE OID_Part=w_OID_Part;
+    DBMS_OUTPUT.PUT_LINE('La prioridad de un participante antes de cambiar el estado de interés en actividades: ' || interes);
+    Add_InteresParticipante(w_dni, 1, 1);
+    SELECT estado INTO interes FROM ESTAINTERESADOEN WHERE OID_Part=w_OID_Part;
+    DBMS_OUTPUT.PUT_LINE('La prioridad de un participante después de cambiar el estado de interés en actividades: ' || interes);
+END;
+/

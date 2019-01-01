@@ -32,6 +32,16 @@ RETURN (w_fechaVencimiento);
 END;
 /
 
+-- Función auxiliar para determinar si una persona es mayor de edad.
+CREATE OR REPLACE FUNCTION esMayorDeEdad (w_fechaNacimiento DATE)
+RETURN BOOLEAN IS
+w_edad NUMBER;
+BEGIN
+    SELECT FLOOR(MONTHS_BETWEEN(SYSDATE, w_fechaNacimiento) / 12) INTO w_edad FROM DUAL;
+    RETURN (w_edad >= 18);
+END esMayorDeEdad;
+/
+
 -------------------------------------------------------------------------------
 -- PROCEDIMIENTOS
 -------------------------------------------------------------------------------
@@ -103,11 +113,10 @@ END Registrar_Coordinador;
 CREATE OR REPLACE PROCEDURE Registrar_Voluntario (w_dni IN PERSONAS.dni%TYPE, w_nombre IN PERSONAS.nombre%TYPE,
     w_apellidos IN PERSONAS.apellidos%TYPE, w_fechaNacimiento IN PERSONAS.fechaNacimiento%TYPE, w_direccion IN
     PERSONAS.direccion%TYPE, w_localidad IN PERSONAS.localidad%TYPE, w_provincia IN PERSONAS.provincia%TYPE,
-    w_codigoPostal IN PERSONAS.codigoPostal%TYPE, w_email IN PERSONAS.email%TYPE, w_telefono IN PERSONAS.telefono%TYPE,
-    w_prioridadParticipacion IN VOLUNTARIOS.prioridadParticipacion%TYPE) IS
+    w_codigoPostal IN PERSONAS.codigoPostal%TYPE, w_email IN PERSONAS.email%TYPE, w_telefono IN PERSONAS.telefono%TYPE) IS
 BEGIN
     Registrar_Persona(w_dni, w_nombre, w_apellidos, w_fechaNacimiento, w_direccion, w_localidad, w_provincia, w_codigoPostal, w_email, w_telefono);
-    INSERT INTO VOLUNTARIOS (dni, prioridadParticipacion) VALUES (w_dni, w_prioridadParticipacion);
+    INSERT INTO VOLUNTARIOS (dni, prioridadParticipacion) VALUES (w_dni, 'baja');
     COMMIT WORK;
 END Registrar_Voluntario;
 /
@@ -129,16 +138,26 @@ CREATE OR REPLACE PROCEDURE Registrar_Participante (w_dni IN PERSONAS.dni%TYPE, 
     w_apellidos IN PERSONAS.apellidos%TYPE, w_fechaNacimiento IN PERSONAS.fechaNacimiento%TYPE, w_direccion IN
     PERSONAS.direccion%TYPE, w_localidad IN PERSONAS.localidad%TYPE, w_provincia IN PERSONAS.provincia%TYPE,
     w_codigoPostal IN PERSONAS.codigoPostal%TYPE, w_email IN PERSONAS.email%TYPE, w_telefono IN PERSONAS.telefono%TYPE,
-    w_gradoDiscapacidad IN PARTICIPANTES.gradoDiscapacidad%TYPE, w_prioridadParticipacion IN PARTICIPANTES.prioridadParticipacion%TYPE,
-    w_dniVol IN VOLUNTARIOS.dni%TYPE, w_dniTut IN TUTORESLEGALES.dni%TYPE) IS
+    w_gradoDiscapacidad IN PARTICIPANTES.gradoDiscapacidad%TYPE, w_dniVol IN VOLUNTARIOS.dni%TYPE, w_dniTut IN TUTORESLEGALES.dni%TYPE) IS
     w_OID_Vol VOLUNTARIOS.OID_Vol%TYPE;
     w_OID_Tut TUTORESLEGALES.OID_Tut%TYPE;
 BEGIN
-    SELECT OID_Vol INTO w_OID_Vol FROM VOLUNTARIOS WHERE dni=w_dniVol;
-    SELECT OID_Tut INTO w_OID_Tut FROM TUTORESLEGALES WHERE dni=w_dniTut;
+    IF w_dniVol IS NULL AND w_dniTut IS NULL THEN
+        w_OID_Vol:=NULL;
+        w_OID_Tut:=NULL;
+    ELSIF w_dniVol IS NULL THEN
+        w_OID_Vol:=NULL;
+        SELECT OID_Tut INTO w_OID_Tut FROM TUTORESLEGALES WHERE dni=w_dniTut;
+    ELSIF w_dniTut IS NULL THEN
+        w_OID_Tut:=NULL;
+        SELECT OID_Vol INTO w_OID_Vol FROM VOLUNTARIOS WHERE dni=w_dniVol;
+    ELSE
+        SELECT OID_Tut INTO w_OID_Tut FROM TUTORESLEGALES WHERE dni=w_dniTut;
+        SELECT OID_Vol INTO w_OID_Vol FROM VOLUNTARIOS WHERE dni=w_dniVol;
+    END IF;
     Registrar_Persona(w_dni, w_nombre, w_apellidos, w_fechaNacimiento, w_direccion, w_localidad, w_provincia, w_codigoPostal, w_email, w_telefono);
     INSERT INTO PARTICIPANTES (dni, gradoDiscapacidad, prioridadParticipacion, OID_Vol, OID_Tut)
-        VALUES (w_dni, w_gradoDiscapacidad, w_prioridadParticipacion, w_OID_Vol, w_OID_Tut);
+        VALUES (w_dni, w_gradoDiscapacidad, 'alta', w_OID_Vol, w_OID_Tut);
     COMMIT WORK;
 END Registrar_Participante;
 /
@@ -184,10 +203,9 @@ END Eliminar_Institucion;
 -- Registrar PATROCINADOR en el sistema de información
 CREATE OR REPLACE PROCEDURE Registrar_Patrocinador (w_cif IN INSTITUCIONES.cif%TYPE, w_nombre IN INSTITUCIONES.nombre%TYPE,
     w_telefono IN INSTITUCIONES.telefono%TYPE, w_direccion IN INSTITUCIONES.direccion%TYPE, w_localidad IN INSTITUCIONES.localidad%TYPE,
-    w_provincia IN INSTITUCIONES.provincia%TYPE, w_codigoPostal IN INSTITUCIONES.codigoPostal%TYPE, w_email IN INSTITUCIONES.email%TYPE,
-    w_tipo IN INSTITUCIONES.tipo%TYPE) IS
+    w_provincia IN INSTITUCIONES.provincia%TYPE, w_codigoPostal IN INSTITUCIONES.codigoPostal%TYPE, w_email IN INSTITUCIONES.email%TYPE) IS
 BEGIN
-    INSERT INTO INSTITUCIONES VALUES (w_cif, w_nombre, w_telefono, w_direccion, w_localidad, w_provincia, w_codigoPostal, w_email, 1, w_tipo);
+    INSERT INTO INSTITUCIONES VALUES (w_cif, w_nombre, w_telefono, w_direccion, w_localidad, w_provincia, w_codigoPostal, w_email, 1, null);
     COMMIT WORK;
 END Registrar_Patrocinador;
 /
@@ -262,13 +280,16 @@ CREATE OR REPLACE PROCEDURE Inscribir_Participante (w_dni IN PERSONAS.dni%TYPE, 
 w_OID_Part PARTICIPANTES.OID_Part%TYPE;
 w_importe RECIBOS.importe%TYPE;
 w_OID_Rec RECIBOS.OID_Rec%TYPE;
+w_OID_Ins INSCRIPCIONES.OID_Ins%TYPE;
 BEGIN
     SELECT OID_Part INTO w_OID_Part FROM PARTICIPANTES WHERE dni=w_dni;
     SELECT costeInscripcion INTO w_importe FROM ACTIVIDADES WHERE OID_Act=w_OID_Act;
     IF (w_importe<>0) THEN
+        INSERT INTO INSCRIPCIONES(OID_Part, OID_Act, OID_Rec) VALUES (w_OID_Part, w_OID_Act, null);
         Add_ReciboInscripcion(w_OID_Act,w_OID_Part,SYSDATE,w_importe,'pendiente');
         SELECT OID_Rec INTO w_OID_Rec FROM RECIBOS WHERE OID_Act=w_OID_Act AND OID_Part=w_OID_Part;
-        INSERT INTO INSCRIPCIONES(OID_Part, OID_Act, OID_Rec) VALUES (w_OID_Part, w_OID_Act, w_OID_Rec);    
+        w_OID_Ins:=SEC_Ins.CURRVAL;
+        UPDATE INSCRIPCIONES SET OID_Rec = w_OID_Rec WHERE OID_Ins=w_OID_Ins;    
     ELSE
         INSERT INTO INSCRIPCIONES(OID_Part, OID_Act, OID_Rec) VALUES (w_OID_Part, w_OID_Act, null);
     END IF;
@@ -286,17 +307,6 @@ BEGIN
 END Inscribir_Voluntario;
 /
 
--- Añadir ESTADO DE INTERES de un VOLUNTARIO en una ACTIVIDAD en el sistema de información
-CREATE OR REPLACE PROCEDURE Add_InteresVoluntariado (w_dni IN VOLUNTARIOS.dni%TYPE, w_OID_Act IN ACTIVIDADES.OID_Act%TYPE,
-w_estado IN ESTAINTERESADOEN.estado%TYPE) IS
-w_OID_Vol VOLUNTARIOS.OID_Vol%TYPE;
-BEGIN
-    SELECT OID_Vol INTO w_OID_Vol FROM VOLUNTARIOS WHERE dni=w_dni;
-    INSERT INTO ESTAINTERESADOEN(OID_Vol, OID_Part, OID_Act, estado) VALUES (w_OID_Vol, null, w_OID_Act, w_estado);
-    COMMIT WORK;
-END Add_InteresVoluntariado;
-/
-
 -- Actualizar ESTADO DE INTERES de un VOLUNTARIO en una ACTIVIDAD en el sistema de información
 CREATE OR REPLACE PROCEDURE Act_InteresVoluntariado (w_dni IN VOLUNTARIOS.dni%TYPE, w_OID_Act IN ACTIVIDADES.OID_Act%TYPE,
 w_estado IN ESTAINTERESADOEN.estado%TYPE) IS
@@ -306,17 +316,6 @@ BEGIN
     UPDATE ESTAINTERESADOEN SET estado = w_estado WHERE OID_Vol=w_OID_Vol AND OID_Act=w_OID_Act;
     COMMIT WORK;
 END Act_InteresVoluntariado;
-/
-
--- Añadir ESTADO DE INTERES de un PARTICIPANTE en una ACTIVIDAD en el sistema de información
-CREATE OR REPLACE PROCEDURE Add_InteresParticipante (w_dni IN PARTICIPANTES.dni%TYPE, w_OID_Act IN ACTIVIDADES.OID_Act%TYPE,
-w_estado IN ESTAINTERESADOEN.estado%TYPE) IS
-w_OID_Part PARTICIPANTES.OID_Part%TYPE;
-BEGIN
-    SELECT OID_Part INTO w_OID_Part FROM PARTICIPANTES WHERE dni=w_dni;
-    INSERT INTO ESTAINTERESADOEN(OID_Vol, OID_Part, OID_Act, estado) VALUES (null, w_OID_Part, w_OID_Act, w_estado);
-    COMMIT WORK;
-END Add_InteresParticipante;
 /
 
 -- Actualizar ESTADO DE INTERES de un PARTICIPANTE en una ACTIVIDAD en el sistema de información
@@ -357,10 +356,9 @@ END Registrar_Envio;
 -------------------------------------------------------------------------------
 
 -- Añadir INFORME MEDICO a un PARTICIPANTE en el sistema de información
-CREATE OR REPLACE PROCEDURE Add_InformeMedico (w_descripcion IN INFORMESMEDICOS.descripcion%TYPE,
-    w_fecha IN INFORMESMEDICOS.fecha%TYPE, w_OID_Part IN INFORMESMEDICOS.OID_Part%TYPE) IS
+CREATE OR REPLACE PROCEDURE Add_InformeMedico (w_OID_Part IN INFORMESMEDICOS.OID_Part%TYPE, w_descripcion IN INFORMESMEDICOS.descripcion%TYPE) IS
 BEGIN
-    INSERT INTO INFORMESMEDICOS (descripcion, fecha, OID_Part) VALUES (w_descripcion, w_fecha, w_OID_Part);
+    INSERT INTO INFORMESMEDICOS (descripcion, fecha, OID_Part) VALUES (w_descripcion, SYSDATE, w_OID_Part);
     COMMIT WORK;
 END Add_InformeMedico;
 /
