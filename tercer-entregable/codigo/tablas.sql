@@ -70,7 +70,7 @@ CREATE TABLE PARTICIPANTES (
         CONSTRAINT ck_gradoDiscapacidad CHECK (gradoDiscapacidad BETWEEN 0.0 AND 1.0),
     prioridadParticipacion VARCHAR2(50)
         CONSTRAINT e_prioridad_Part CHECK (prioridadParticipacion IN ('alta', 'media', 'baja')),
-    OID_Tut INTEGER NOT NULL,
+    OID_Tut INTEGER,
     OID_Vol INTEGER,
     FOREIGN KEY (dni) REFERENCES PERSONAS ON DELETE CASCADE,
     FOREIGN KEY (OID_Vol) REFERENCES VOLUNTARIOS,
