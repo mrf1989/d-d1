@@ -131,3 +131,22 @@ EXEC Add_Actividad('Campeonato 3x3 Basket adaptado', 'Ayudar a la mejora de la c
 INSERT INTO PATROCINIOS VALUES ('1','A87674532','1800','2');
 INSERT INTO PATROCINIOS VALUES ('2','A33219876','700','1');
 INSERT INTO PATROCINIOS VALUES ('3','B78998456','500','1');
+
+--Inscribir en ACTIVIDADES
+EXEC Inscribir_Participante('23987795C', 1);
+EXEC Inscribir_Participante('66641234M', 1);
+EXEC Inscribir_Participante('64090012E', 1);
+EXEC Inscribir_Participante('43761927D', 2);
+EXEC Inscribir_Participante('61188453K', 2);
+EXEC Inscribir_Participante('23559156L', 2);
+
+EXEC Act_Recibo(1, '28/02/2019', '16,67', 'pagado');
+EXEC Act_Recibo(2, '28/02/2019', '16,67', 'pagado');
+EXEC Act_Recibo(3, '28/02/2019', '16,67', 'pagado');
+
+EXEC Inscribir_Voluntario('47339192V', 2);
+EXEC Inscribir_Voluntario('12345678A', 2);
+EXEC Inscribir_Voluntario('57231289R', 2);
+EXEC Inscribir_Voluntario('86239863A', 1);
+EXEC Inscribir_Voluntario('13227182M', 1);
+EXEC Inscribir_Voluntario('47339192V', 1);
