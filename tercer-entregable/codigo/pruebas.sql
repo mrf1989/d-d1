@@ -270,7 +270,7 @@ EXEC Act_Pregunta(1, 2, 'opcional', 'Eliga los tenderetes que más le gustaron');
 EXEC FichaParticipante(1);
 EXEC FichaVoluntario(1);
 EXEC FichaPatrocinador('A87674532');
---EXEC FichaDonante(57153559V);
+EXEC FichaDonante('57153559V');
 EXEC DonacionesPorFecha('01/01/2018','31/12/2018');
 EXEC ActsPorFecha('01/01/2018','31/12/2018');
 

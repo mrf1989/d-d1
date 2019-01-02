@@ -77,24 +77,26 @@ END;
 -- PERSONA (NO FUNCIONA)
 SET SERVEROUTPUT ON;
 CREATE OR REPLACE PROCEDURE FichaDonante(w_dni  personas.dni%TYPE) IS
-    nombre_persona          personas.nombre%TYPE;
-    nombre_tipo_donacion    tipodonaciones.nombre%TYPE;
-    
+    persona PERSONAS%ROWTYPE;    
     CURSOR C_DonP IS
-        SELECT cantidad, valorunitario, fecha, apellidos, fechanacimiento, direccion, localidad, codigopostal, email, telefono
-        FROM DONACIONES D NATURAL JOIN PERSONAS P LEFT JOIN TIPODONACIONES TD ON d.oid_tdon=td.oid_tdon WHERE p.dni=w_dni;
+        SELECT  cantidad, valorunitario, fecha FROM DONACIONES NATURAL JOIN PERSONAS
+        NATURAL JOIN TIPODONACIONES  WHERE dni=w_dni;
 BEGIN 
-        nombre_persona := P.NOMBRE;
-        nombre_tipo_donacion := TD.NOMBRE;
-        DBMS_OUTPUT.PUT_LINE(RPAD('TIPO DONACIÓN',25) || RPAD('CANTIDAD',25) || RPAD('VALOR UNITARIO',25) || RPAD('FECHA DONACIÓN',25) ||
-        RPAD('NOMBRE',25) || RPAD('APELLIDOS',25) || RPAD('FECHA NACIMIENTO',25) || RPAD('DIRECCIÓN',25) ||
-        RPAD('LOCALIDAD',25) || RPAD('PROVINCIA',25) || RPAD('CÓDIGO POSTAL',25) || RPAD('EMAIL',25) ||
-        RPAD('TELÉFONO',25));
+        SELECT * INTO persona FROM PERSONAS WHERE dni=w_dni;
+        
+        DBMS_OUTPUT.PUT_LINE(RPAD('NOMBRE',25) || RPAD('APELLIDOS',25) || RPAD('FECHA NACIMIENTO',25) ||
+            RPAD('DIRECCIÓN',40) || RPAD('LOCALIDAD',25) || RPAD('PROVINCIA',25) || RPAD('CÓDIGO POSTAL',25) ||
+            RPAD('EMAIL',40) || RPAD('TELÉFONO',25));
+        
+        DBMS_OUTPUT.PUT_LINE(RPAD(persona.nombre, 25) || RPAD(persona.apellidos, 25) || RPAD(persona.fechanacimiento, 25) ||
+            RPAD(persona.direccion, 40) || RPAD(persona.localidad, 25) || RPAD(persona.provincia, 25) || 
+            RPAD(persona.codigopostal, 25) || RPAD(persona.email, 40) || RPAD(persona.telefono, 25));
+            
+        DBMS_OUTPUT.PUT_LINE(RPAD('TIPO DONACIÓN',25) || RPAD('CANTIDAD',25) || RPAD('VALOR UNITARIO',25) ||
+            RPAD('FECHA DONACIÓN',25));    
         FOR registro IN C_DonP LOOP
-            DBMS_OUTPUT.PUT_LINE(RPAD(nombre_tipo_donacion, 25) || RPAD(registro.cantidad, 25) || RPAD(registro.valorunitario, 25) || RPAD(registro.fecha, 25) ||
-            RPAD(nombre_persona, 25) || RPAD(registro.apellidos, 25) || RPAD(registro.fechanacimiento, 25) ||
-            RPAD(registro.direccion, 25) || RPAD(registro.localidad, 25) || RPAD(registro.provincia, 25) || 
-            RPAD(registro.codigopostal, 25) || RPAD(registro.email, 25) || RPAD(registro.telefono, 25));
+            DBMS_OUTPUT.PUT_LINE(RPAD('---', 25) || RPAD(registro.cantidad, 25) ||
+            RPAD(registro.valorunitario, 25) || RPAD(registro.fecha, 25));
         END LOOP;
 END;
 /
