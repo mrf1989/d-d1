@@ -127,8 +127,15 @@ EXEC Registrar_Proyecto('98385816W', 'Baloncesto Adaptado 2018', 'Centro Deporti
 EXEC Add_Actividad('Mercadillo de Navidad', 'Mejorar la integración social de las personas con discapacidad', '27/12/2018', '27/12/2018', 30, 'social', 0, 1);
 EXEC Add_Actividad('Campeonato 3x3 Basket adaptado', 'Ayudar a la mejora de la condición física de los participantes', '28/12/2018', '23/12/2018', 45, 'deportiva', 750, 2);
 
+-- Insertar INTERES en ACTIVIDADES
+INSERT INTO ESTAINTERESADOEN(estado, OID_Vol, OID_Act) VALUES (1,1,1);
+INSERT INTO ESTAINTERESADOEN(estado, OID_Vol, OID_Act) VALUES (0,1,2);
+INSERT INTO ESTAINTERESADOEN(estado, OID_Part, OID_Act) VALUES (1,1,1);
+INSERT INTO ESTAINTERESADOEN(estado, OID_Part, OID_Act) VALUES (1,1,2);
+
 -- Insertar PATROCINIOS
 INSERT INTO PATROCINIOS VALUES ('1','A87674532','1800','2');
+INSERT INTO PATROCINIOS VALUES ('1','A87674532','2000','1');
 INSERT INTO PATROCINIOS VALUES ('2','A33219876','700','1');
 INSERT INTO PATROCINIOS VALUES ('3','B78998456','500','1');
 
@@ -150,3 +157,6 @@ EXEC Inscribir_Voluntario('57231289R', 2);
 EXEC Inscribir_Voluntario('86239863A', 1);
 EXEC Inscribir_Voluntario('13227182M', 1);
 EXEC Inscribir_Voluntario('47339192V', 1);
+
+-- Insertar INFORMES MEDICOS
+INSERT INTO INFORMESMEDICOS(OID_Part,fecha,descripcion) VALUES (1,'20/12/2018','El paciente debe tomar la medicación prescrita dos veces al día, antes del almuerzo y antes de la cena.');
