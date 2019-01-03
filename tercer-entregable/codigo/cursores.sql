@@ -24,7 +24,7 @@ CREATE OR REPLACE PROCEDURE FichaParticipante(w_OID_Part PARTICIPANTES.OID_Part%
 BEGIN
     FOR REG_Part IN C_Participante LOOP
         DBMS_OUTPUT.PUT_LINE('========================================================================');
-        DBMS_OUTPUT.PUT_LINE('FICHA DE PARTICIPANTE');
+        DBMS_OUTPUT.PUT_LINE('  FICHA DE PARTICIPANTE');
         DBMS_OUTPUT.PUT_LINE('========================================================================');
         DBMS_OUTPUT.PUT_LINE('- Participante: ' || REG_Part.nombre || ' ' || REG_Part.apellidos);
         DBMS_OUTPUT.PUT_LINE('- DNI: ' || REG_Part.dni);
@@ -60,7 +60,7 @@ BEGIN
     FOR REG_Int IN C_Intereses LOOP
         DBMS_OUTPUT.PUT_LINE('- ' || REG_Int.nombre);
     END LOOP;
-END;
+END FichaParticipante;
 /
 
 -- VOLUNTARIOS
@@ -77,7 +77,7 @@ CREATE OR REPLACE PROCEDURE FichaVoluntario(w_OID_Vol VOLUNTARIOS.OID_Vol%TYPE) 
 BEGIN 
     FOR REG_Vol IN C_Voluntario LOOP
         DBMS_OUTPUT.PUT_LINE('========================================================================');
-        DBMS_OUTPUT.PUT_LINE('FICHA DE VOLUNTARIO');
+        DBMS_OUTPUT.PUT_LINE('  FICHA DE VOLUNTARIO');
         DBMS_OUTPUT.PUT_LINE('========================================================================');
         DBMS_OUTPUT.PUT_LINE('- Voluntario: ' || REG_Vol.nombre || ' ' || REG_Vol.apellidos);
         DBMS_OUTPUT.PUT_LINE('- DNI: ' || REG_Vol.dni);
@@ -94,7 +94,7 @@ BEGIN
     FOR REG_Int IN C_Intereses LOOP
         DBMS_OUTPUT.PUT_LINE('- ' || REG_Int.nombre);
     END LOOP;
-END;
+END FichaVoluntario;
 /
 
 -- PATROCINADORES
@@ -106,7 +106,7 @@ CREATE OR REPLACE PROCEDURE FichaPatrocinador(w_cif INSTITUCIONES.cif%TYPE) IS
 BEGIN
     FOR REG_Ins IN C_Patrocinador LOOP
         DBMS_OUTPUT.PUT_LINE('========================================================================');
-        DBMS_OUTPUT.PUT_LINE('FICHA DE PATROCINADOR');
+        DBMS_OUTPUT.PUT_LINE('  FICHA DE PATROCINADOR');
         DBMS_OUTPUT.PUT_LINE('========================================================================');
         DBMS_OUTPUT.PUT_LINE('- Patrocinador: ' || REG_Ins.nombre);
         DBMS_OUTPUT.PUT_LINE('- CIF: ' || REG_Ins.cif);
@@ -122,10 +122,43 @@ BEGIN
     FOR REG_Fin IN C_Patrocinios LOOP
         DBMS_OUTPUT.PUT_LINE('- ' || RPAD(' (' || REG_Fin.cantidad ||' euros)',20) || REG_Fin.nombre);
     END LOOP;
-END;
+END FichaPatrocinador;
 /
 
--- DONANTES
+-- RF-*. Lista de DONANTES
+CREATE OR REPLACE PROCEDURE ListaDonantes IS
+    CURSOR C_DonantesP IS
+        SELECT dni, nombre, apellidos, direccion, localidad, codigoPostal, provincia, telefono, COUNT(*) AS n_donaciones
+            FROM PERSONAS NATURAL JOIN DONACIONES
+            GROUP BY dni, nombre, apellidos, direccion, localidad, codigoPostal, provincia, telefono;
+    CURSOR C_DonantesI IS
+        SELECT cif, nombre, direccion, localidad, codigoPostal, provincia, telefono, COUNT(*) AS n_donaciones
+            FROM INSTITUCIONES NATURAL JOIN DONACIONES
+            GROUP BY cif, nombre, direccion, localidad, codigoPostal, provincia, telefono;
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('========================================================================');
+    DBMS_OUTPUT.PUT_LINE('  LISTA DE DONANTES');
+    DBMS_OUTPUT.PUT_LINE('========================================================================');
+    DBMS_OUTPUT.PUT_LINE('------------------------------------------------------------------------');
+    DBMS_OUTPUT.PUT_LINE('-- Donantes particulares');
+    DBMS_OUTPUT.PUT_LINE('------------------------------------------------------------------------');
+    DBMS_OUTPUT.PUT_LINE(RPAD('DNI',15) || RPAD('Nº DONACIONES',16) || RPAD('NOMBRE',35) || RPAD('DIRECCION',60) || RPAD('TELEFONO',15));
+    FOR REG_DonP IN C_DonantesP LOOP
+        DBMS_OUTPUT.PUT_LINE(RPAD(REG_DonP.dni,15) || RPAD(REG_DonP.n_donaciones,16) || RPAD(REG_DonP.nombre || ' ' || REG_DonP.apellidos,35) ||
+            RPAD(REG_DonP.direccion || ', ' || REG_DonP.localidad || ', ' || REG_DonP.codigoPostal || ', ' || REG_DonP.provincia,60) ||
+            RPAD(REG_DonP.telefono,15));
+    END LOOP;
+    DBMS_OUTPUT.PUT_LINE('------------------------------------------------------------------------');
+    DBMS_OUTPUT.PUT_LINE('-- Donantes institucionales');
+    DBMS_OUTPUT.PUT_LINE('------------------------------------------------------------------------');
+    DBMS_OUTPUT.PUT_LINE(RPAD('CIF',15) || RPAD('Nº DONACIONES',16) || RPAD('NOMBRE',35) || RPAD('DIRECCION',60) || RPAD('TELEFONO',15));
+    FOR REG_DonI IN C_DonantesI LOOP
+        DBMS_OUTPUT.PUT_LINE(RPAD(REG_DonI.cif,15) || RPAD(REG_DonI.n_donaciones,16) || RPAD(REG_DonI.nombre,35) ||
+            RPAD(REG_DonI.direccion || ', ' || REG_DonI.localidad || ', ' || REG_DonI.codigoPostal || ', ' || REG_DonI.provincia,60) ||
+            RPAD(REG_DonI.telefono,15));
+    END LOOP;
+END ListaDonantes;
+/
 
 -- RF-2: VALORACIÓN DE ACTIVIDADES
 -- CUESTIONARIOS DE VOLUNTARIOS
@@ -145,7 +178,7 @@ BEGIN
             RPAD(REG_Act.tipo,20) || RPAD(REG_Act.costeTotal || ' €',20) || RPAD(REG_Act.costeInscripcion || ' €',20)); 
     END LOOP;
     DBMS_OUTPUT.PUT_LINE('=======================================================================================================================');
-    DBMS_OUTPUT.PUT_LINE('VOLUNTARIOS DE LA ACTIVIDAD');
+    DBMS_OUTPUT.PUT_LINE('  VOLUNTARIOS DE LA ACTIVIDAD');
     DBMS_OUTPUT.PUT_LINE('=======================================================================================================================');
     DBMS_OUTPUT.PUT_LINE(RPAD('DNI',15) || RPAD('Nombre',30) || RPAD('Nacimiento',12) || 
         RPAD('Email',25) || RPAD('Teléfono',15));
@@ -153,7 +186,7 @@ BEGIN
         DBMS_OUTPUT.PUT_LINE(RPAD(REG_Vol.dni,15) || RPAD(REG_Vol.nombre || ' ' || REG_Vol.apellidos,30) || RPAD(REG_Vol.fechaNacimiento,12) || 
             RPAD(REG_Vol.email,25) || RPAD(REG_Vol.telefono,15));
     END LOOP;
-END;
+END Lista_VolAct;
 /
 
 -- RF-9. Historial de VOLUNTARIADO
@@ -173,17 +206,17 @@ BEGIN
             RPAD(REG_Vol.email,25) || RPAD(REG_Vol.telefono,15));
     END LOOP;
     DBMS_OUTPUT.PUT_LINE('=======================================================================================================================');
-    DBMS_OUTPUT.PUT_LINE('HISTORIAL DE VOLUNTARIADO');
+    DBMS_OUTPUT.PUT_LINE('  HISTORIAL DE VOLUNTARIADO');
     DBMS_OUTPUT.PUT_LINE('=======================================================================================================================');
     DBMS_OUTPUT.PUT_LINE(RPAD('Proyecto',40) || RPAD('OID_Act',10) || RPAD('Nombre',40) || RPAD('Inicio',15) || RPAD('Fin',15));
     FOR REG_Colab IN C_Colaboraciones LOOP
         DBMS_OUTPUT.PUT_LINE(RPAD(REG_Colab.Proj_nombre,40) || RPAD(REG_Colab.OID_Act,10) || RPAD(REG_Colab.Act_nombre,40) || 
             RPAD(REG_Colab.Act_fInicio,15) || RPAD(REG_Colab.Act_fFin,15));
     END LOOP;
-END;
+END Lista_HistVol;
 /
 
--- RF-10 Lista de PARTICIPANTES en ACTIVIDAD
+-- RF-10. Lista de PARTICIPANTES en ACTIVIDAD
 CREATE OR REPLACE PROCEDURE Lista_PartAct(w_OID_Act ACTIVIDADES.OID_Act%TYPE) IS
     CURSOR C_Actividad IS
         SELECT * FROM ACTIVIDADES WHERE OID_Act=w_OID_Act;
@@ -205,7 +238,7 @@ BEGIN
             RPAD(REG_Act.tipo,20) || RPAD(REG_Act.costeTotal || ' €',20) || RPAD(REG_Act.costeInscripcion || ' €',20)); 
     END LOOP;
     DBMS_OUTPUT.PUT_LINE('=======================================================================================================================');
-    DBMS_OUTPUT.PUT_LINE('PARTICIPANTES DE LA ACTIVIDAD');
+    DBMS_OUTPUT.PUT_LINE('  PARTICIPANTES DE LA ACTIVIDAD');
     DBMS_OUTPUT.PUT_LINE('=======================================================================================================================');
     DBMS_OUTPUT.PUT_LINE(RPAD('DNI',15) || RPAD('Nombre',30) || RPAD('Nacimiento',12) || RPAD('% discapacidad', 15) || RPAD('|',2) ||
         RPAD('Tutor Legal', 35) || RPAD('Teléfono', 12) || RPAD('Email',25));
@@ -214,7 +247,7 @@ BEGIN
             RPAD(REG_Part.Part_fechaNacimiento,12) || RPAD(REG_Part.gradoDiscapacidad * 100 || ' %', 15) || RPAD('|',2) ||
             RPAD(REG_Part.Tut_nombre || ' ' || REG_Part.Tut_apellidos,35) || RPAD(REG_Part.Tut_telefono, 12) || RPAD(REG_Part.Tut_email,25));
     END LOOP;
-END;
+END Lista_PartAct;
 /
 
 -- RF-11. Historial de PARTICIPACION
@@ -234,17 +267,17 @@ BEGIN
             RPAD(REG_Vol.telefono,15) || RPAD(REG_Vol.email,25));
     END LOOP;
     DBMS_OUTPUT.PUT_LINE('=======================================================================================================================');
-    DBMS_OUTPUT.PUT_LINE('HISTORIAL DE PARTICIPACIÓN');
+    DBMS_OUTPUT.PUT_LINE('  HISTORIAL DE PARTICIPACIÓN');
     DBMS_OUTPUT.PUT_LINE('=======================================================================================================================');
     DBMS_OUTPUT.PUT_LINE(RPAD('Proyecto',40) || RPAD('OID_Act',10) || RPAD('Nombre',40) || RPAD('Inicio',15) || RPAD('Fin',15));
     FOR REG_Ins IN C_Inscripciones LOOP
         DBMS_OUTPUT.PUT_LINE(RPAD(REG_Ins.Proj_nombre,40) || RPAD(REG_Ins.OID_Act,10) || RPAD(REG_Ins.Act_nombre,40) || 
             RPAD(REG_Ins.Act_fInicio,15) || RPAD(REG_Ins.Act_fFin,15));
     END LOOP;
-END;
+END Lista_HistPart;
 /
 
--- RF-12 Lista de PATROCINIOS de ACTIVIDAD
+-- RF-12. Lista de PATROCINIOS de ACTIVIDAD
 CREATE OR REPLACE PROCEDURE Lista_PatrociniosAct(w_OID_Act ACTIVIDADES.OID_Act%TYPE) IS
     CURSOR C_Actividad IS
         SELECT * FROM ACTIVIDADES WHERE OID_Act=w_OID_Act;
@@ -258,67 +291,58 @@ BEGIN
             RPAD(REG_Act.tipo,20) || RPAD(REG_Act.costeTotal || ' €',20) || RPAD(REG_Act.costeInscripcion || ' €',20)); 
     END LOOP;
     DBMS_OUTPUT.PUT_LINE('=======================================================================================================================');
-    DBMS_OUTPUT.PUT_LINE('PATROCINIOS DE LA ACTIVIDAD');
+    DBMS_OUTPUT.PUT_LINE('  PATROCINIOS DE LA ACTIVIDAD');
     DBMS_OUTPUT.PUT_LINE('=======================================================================================================================');
     DBMS_OUTPUT.PUT_LINE(RPAD('OID_Fin',8) || RPAD('Cantidad',15) || RPAD('Patrocinador',50) || RPAD('Tipo',15) || RPAD('Email', 35) || RPAD('Teléfono',15));
     FOR REG_Fin IN C_Patrocinios LOOP
         DBMS_OUTPUT.PUT_LINE(RPAD(REG_Fin.OID_Fin,8) || RPAD(REG_Fin.cantidad || ' €',15) || RPAD(REG_Fin.nombre,50) || RPAD(REG_Fin.tipo,15) ||
             RPAD(REG_Fin.email, 35) || RPAD(REG_Fin.telefono,15));
     END LOOP;
-END;
+END Lista_PatrociniosAct;
 /
 
--- RF-13: INFORME DE DONACIONES POR AÑO
-SET SERVEROUTPUT ON
-CREATE OR REPLACE PROCEDURE DonacionesPorFecha(f1 date, f2 date) IS
-    CURSOR C IS
-        SELECT * FROM DONACIONES NATURAL JOIN  TIPODONACIONES
-        WHERE fecha BETWEEN f1 and f2;
-BEGIN 
-        DBMS_OUTPUT.PUT_LINE(RPAD('OID DONACIÓN',25) || RPAD('CANTIDAD DONADA',25) || RPAD('VALOR UNITARIO',25) || RPAD('FECHA',25) ||
-        RPAD('TIPO DONACIÓN',25) || RPAD('ID DONANTE',25));
-        FOR registro IN C LOOP
-            DBMS_OUTPUT.PUT_LINE(RPAD(registro.oid_don, 25)|| RPAD(registro.cantidad, 25)|| RPAD(registro.valorunitario, 25) ||
-            RPAD(registro.fecha, 25) || RPAD(registro.nombre, 25) || RPAD(registro.dni, 25) || registro.cif);
+-- RF-13. Lista de DONACIONES en intervalo temporal
+CREATE OR REPLACE PROCEDURE Lista_DonTemp(f1 DATE, f2 DATE) IS
+    CURSOR C_Donaciones IS
+        SELECT * FROM DONACIONES NATURAL JOIN TIPODONACIONES
+            WHERE fecha BETWEEN f1 AND f2
+            ORDER BY fecha ASC;
+BEGIN
+    IF (f1 < f2) THEN
+        DBMS_OUTPUT.PUT_LINE('=======================================================================================================================');
+        DBMS_OUTPUT.PUT_LINE('  DONACIONES REALIZADAS ENTRE EL ' || f1 || ' Y EL ' || f2);
+        DBMS_OUTPUT.PUT_LINE('=======================================================================================================================');
+        DBMS_OUTPUT.PUT_LINE(RPAD('OID_DON',10) || RPAD('DONACIÓN',30) || RPAD('CANTIDAD DONADA',25) || RPAD('VALOR UNITARIO',20) ||
+            RPAD('FECHA',15) || RPAD('ID DONANTE',20));
+        FOR REG_Don IN C_Donaciones LOOP
+            DBMS_OUTPUT.PUT_LINE(RPAD(REG_Don.OID_Don,10) || RPAD(REG_Don.nombre,30) || RPAD(REG_Don.cantidad || ' ' || REG_Don.tipoUnidad,25)||
+                RPAD(REG_Don.valorUnitario || ' €', 20) || RPAD(REG_Don.fecha, 15) || RPAD(REG_Don.dni || REG_Don.cif, 20));
         END LOOP;
-END;
+    ELSE
+        raise_application_error(-20600, 'La fecha f1 debe ser anterior a la fecha f2.');
+    END IF;
+END Lista_DonTemp;
 /
 
--- RF-14: INFORME DE ACTIVIDADES POR AÑO
-SET SERVEROUTPUT ON;
-CREATE OR REPLACE PROCEDURE ActsPorFecha(f1 date, f2 date) IS
-    CURSOR C IS
-        SELECT * FROM ACTIVIDADES WHERE fechainicio BETWEEN f1 and f2;
-BEGIN 
-        DBMS_OUTPUT.PUT_LINE(RPAD('OID_ACT',25) || RPAD('NOMBRE',35) || RPAD('OBJETIVO',70) || RPAD('Nº VOLS REQUERIDOS',25) || 
-        RPAD('TIPO ACTIVIDAD',25) || RPAD('COSTE TOTAL',25) || RPAD('COSTE INSCRIPCIÓN',25));
-        FOR registro IN C LOOP
-            DBMS_OUTPUT.PUT_LINE(RPAD(registro.oid_act, 25)|| RPAD(registro.nombre, 35) ||  RPAD(registro.objetivo, 70) || 
-            RPAD(registro.voluntariosrequeridos, 25) || RPAD(registro.tipo, 25) || RPAD(registro.costetotal, 25) ||
-            RPAD(registro.costeinscripcion, 25));
+-- RF-14. Lista de ACTIVIDADES en intervalo temporal
+CREATE OR REPLACE PROCEDURE Lista_ActTemp(f1 DATE, f2 DATE) IS
+    CURSOR C_Actividades IS
+            SELECT P.nombre AS Proj_nombre, A.* FROM PROYECTOS P LEFT JOIN ACTIVIDADES A ON P.OID_Proj=A.OID_Proj
+            WHERE A.fechaInicio BETWEEN f1 AND f2 ORDER BY A.fechaInicio ASC;
+BEGIN
+    IF (f1 < f2) THEN
+        DBMS_OUTPUT.PUT_LINE('=======================================================================================================================');
+        DBMS_OUTPUT.PUT_LINE('  ACTIVIDADES REALIZADAS ENTRE EL ' || f1 || ' Y EL ' || f2);
+        DBMS_OUTPUT.PUT_LINE('=======================================================================================================================');
+        DBMS_OUTPUT.PUT_LINE(RPAD('PROYECTO',37) || RPAD('OID_ACT',10) || RPAD('ACTIVIDAD',40) || RPAD('TIPO ACTIVIDAD',18) ||
+            RPAD('Nº MAX. PART',15) || RPAD('Nº VOL REQU.',15) || RPAD('COSTE TOTAL',20) || RPAD('COSTE INSCRIPCIÓN',20));
+        FOR REG_Act IN C_Actividades LOOP
+            DBMS_OUTPUT.PUT_LINE(RPAD(REG_Act.Proj_nombre,37) || RPAD(REG_Act.OID_Act,10) || RPAD(REG_Act.nombre,40) ||
+                RPAD(REG_Act.tipo,18) || RPAD(REG_Act.numeroPlazas,15) || RPAD(REG_Act.voluntariosRequeridos,15) ||
+                RPAD(REG_Act.costeTotal || ' €',20) || RPAD(REG_Act.costeInscripcion || ' €',20));
         END LOOP;
-    
-END;
+    ELSE
+        raise_application_error(-20600, 'La fecha f1 debe ser anterior a la fecha f2.');
+    END IF;
+END Lista_ActTemp;
 /
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
