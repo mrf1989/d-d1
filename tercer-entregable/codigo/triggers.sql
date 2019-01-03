@@ -2,7 +2,7 @@
 -- TRIGGERS asociados a reglas de negocio
 -------------------------------------------------------------------------------
 
--- RN-1 y RN-2. Prioridad de participaciÃ³n
+-- RN-1 y RN-2. Prioridad de participación
 CREATE OR REPLACE TRIGGER PRIORIDAD_PARTICIPACION
 BEFORE UPDATE ON ESTAINTERESADOEN
 FOR EACH ROW
@@ -67,7 +67,7 @@ BEGIN
 END REPRESENTANTE_LEGAL;
 /
 
--- RN-5. InformaciÃ³n mÃ©dica
+-- RN-5. Información médica
 CREATE OR REPLACE TRIGGER INFORMACION_MEDICA
 BEFORE INSERT ON INSCRIPCIONES
 FOR EACH ROW
@@ -76,7 +76,7 @@ DECLARE
 BEGIN
     SELECT COUNT(*) INTO n_informes FROM INFORMESMEDICOS WHERE OID_Part=:NEW.OID_Part;
     IF (n_informes=0) THEN
-        raise_application_error(-20600, 'El participante debe tener asociado al menos un informe mï¿½dico.');
+        raise_application_error(-20600, 'El participante debe tener asociado al menos un informe médico.');
     END IF;
 END INFORMACION_MEDICA;
 /
@@ -111,7 +111,7 @@ BEGIN
 END VOLUNTARIO_INSCRITO;
 /
 
--- RN-7. Estado de interÃ©s en actividades
+-- RN-7. Estado de interés en actividades
 CREATE OR REPLACE TRIGGER ESTADO_INTERES_ACT
 AFTER INSERT ON ACTIVIDADES
 FOR EACH ROW
@@ -137,7 +137,7 @@ DECLARE
 BEGIN
     SELECT * INTO mensaje FROM MENSAJES WHERE OID_M=:NEW.OID_M;
     IF (mensaje.tipo='informe' AND :NEW.dni IS NOT NULL) THEN
-        raise_application_error(-20600, 'Sï¿½lo los patrocinadores pueden recibir informes.');
+        raise_application_error(-20600, 'Sólo los patrocinadores pueden recibir informes.');
     END IF;
 END ENVIO_MENSAJE;
 /
@@ -197,7 +197,7 @@ BEGIN
     SELECT numeroPlazas INTO w_numeroPlazas FROM ACTIVIDADES WHERE OID_Act=:NEW.OID_Act;
     SELECT COUNT(OID_Part) INTO n_inscritos FROM INSCRIPCIONES WHERE OID_Act=:NEW.OID_Act;
     IF (n_inscritos = w_numeroPlazas) THEN
-        raise_application_error(-20600, 'No hay mï¿½s plazas de inscripciï¿½n disponibles');
+        raise_application_error(-20600, 'No hay más plazas de inscripción disponibles');
     END IF;
 END PLAZAS_INSCRIPCIONES;
 /
@@ -211,7 +211,7 @@ DECLARE
 BEGIN
     SELECT fechaCreacion INTO w_fechaCreacion FROM FORMULARIOS NATURAL JOIN CUESTIONARIOS WHERE OID_Form=:NEW.OID_Form;
     IF (SYSDATE NOT BETWEEN w_fechaCreacion AND w_fechaCreacion+15) THEN
-        raise_application_error(-20602, 'Solo puede responderse al formulario durante los primeros 15 dï¿½as desde su fecha de creaciï¿½n.');
+        raise_application_error(-20602, 'Sólo puede responderse al formulario durante los primeros 15 días desde su fecha de creación.');
     END IF;
 END PLAZO_CUESTIONARIO;
 /
