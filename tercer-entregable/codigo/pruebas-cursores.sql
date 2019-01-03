@@ -11,3 +11,6 @@ EXEC Lista_HistVol(1);
 EXEC Lista_HistPart(1);
 EXEC Lista_PatrociniosAct(1);
 EXEC ListaDonantes;
+EXEC Lista_Email('voluntarios');
+EXEC GET_CuestionariosPart(1);
+EXEC GET_CuestionariosVol(1);

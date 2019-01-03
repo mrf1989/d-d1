@@ -2,9 +2,7 @@
 -- CURSORES y LISTAS
 -------------------------------------------------------------------------------
 
--- RF-1. Fichas de usuarios
-
--- PARTICIPANTES
+-- RF-1. Fichas de PARTICIPANTES
 CREATE OR REPLACE PROCEDURE FichaParticipante(w_OID_Part PARTICIPANTES.OID_Part%TYPE) IS
     CURSOR C_Participante IS
         SELECT * FROM PARTICIPANTES NATURAL JOIN PERSONAS WHERE OID_Part=w_OID_Part;
@@ -63,7 +61,7 @@ BEGIN
 END FichaParticipante;
 /
 
--- VOLUNTARIOS
+-- RF-1. Fichas de VOLUNTARIOS
 CREATE OR REPLACE PROCEDURE FichaVoluntario(w_OID_Vol VOLUNTARIOS.OID_Vol%TYPE) IS
     CURSOR C_Voluntario IS
         SELECT * FROM VOLUNTARIOS NATURAL JOIN PERSONAS WHERE OID_Vol=w_OID_Vol;
@@ -97,7 +95,7 @@ BEGIN
 END FichaVoluntario;
 /
 
--- PATROCINADORES
+-- RF-1. Fichas de PATROCINADORES
 CREATE OR REPLACE PROCEDURE FichaPatrocinador(w_cif INSTITUCIONES.cif%TYPE) IS
     CURSOR C_Patrocinador IS
         SELECT * FROM INSTITUCIONES WHERE cif=w_cif AND esPatrocinador=1;
@@ -123,6 +121,88 @@ BEGIN
         DBMS_OUTPUT.PUT_LINE('- ' || RPAD(' (' || REG_Fin.cantidad ||' euros)',20) || REG_Fin.nombre);
     END LOOP;
 END FichaPatrocinador;
+/
+
+-- RF-2. Valoración de ACTIVIDADES mediante CUESTIONARIOS contestados por PARTICIPANTES
+-- Procedimiento auxiliar que obtiene las valoraciones de un CUESTIONARIO contestado por un PARTICIPANTE
+CREATE OR REPLACE PROCEDURE GET_ValoracionesPart(w_OID_Cues CUESTIONARIOS.OID_Cues%TYPE, w_OID_Part PARTICIPANTES.OID_Part%TYPE) IS
+    CURSOR C_Formularios IS
+        SELECT P.enunciado AS enunciado, R.contenido AS respuesta FROM FORMULARIOS F
+            LEFT JOIN RESPUESTAS R ON F.OID_Form=R.OID_Form
+            LEFT JOIN PREGUNTAS P ON F.OID_Q=P.OID_Q
+            WHERE F.OID_Cues=w_OID_Cues AND R.OID_Part=w_OID_Part;
+    CURSOR C_Participante IS
+        SELECT * FROM PERSONAS NATURAL JOIN PARTICIPANTES WHERE OID_Part=w_OID_Part;
+BEGIN
+    FOR REG_Part IN C_Participante LOOP
+        DBMS_OUTPUT.PUT_LINE('- PARTICIPANTE: ' || REG_Part.nombre || ' ' || REG_Part.apellidos || ' (' || REG_Part.dni || ')');   
+    END LOOP;
+    FOR REG_Form IN C_Formularios LOOP
+        DBMS_OUTPUT.PUT_LINE('- ' || REG_Form.enunciado);
+        DBMS_OUTPUT.PUT_LINE('---> ' || REG_Form.respuesta);
+    END LOOP;
+    DBMS_OUTPUT.PUT_LINE('------------------------------------------------------------------------');
+END GET_ValoracionesPart;
+/
+CREATE OR REPLACE PROCEDURE GET_CuestionariosPart(w_OID_Act ACTIVIDADES.OID_Act%TYPE) IS
+    CURSOR C_Cuestionarios IS
+        SELECT DISTINCT C.OID_Cues AS OID_Cues, I.OID_Part AS OID_Part FROM ACTIVIDADES A LEFT JOIN CUESTIONARIOS C ON A.OID_Act=C.OID_Act
+            LEFT JOIN INSCRIPCIONES I ON A.OID_Act=I.OID_Act LEFT JOIN RESPUESTAS R ON I.OID_Part=R.OID_Part WHERE A.OID_Act=w_OID_Act
+            AND EXISTS (SELECT * FROM RESPUESTAS WHERE R.OID_Part=I.OID_Part);
+    actividad ACTIVIDADES%ROWTYPE;
+BEGIN
+    SELECT * INTO actividad FROM ACTIVIDADES WHERE OID_Act=w_OID_Act;
+    DBMS_OUTPUT.PUT_LINE('========================================================================');
+    DBMS_OUTPUT.PUT_LINE('  CUESTIONARIOS DE ACTIVIDAD - VALORACIONES DE PARTICIPANTES');
+    DBMS_OUTPUT.PUT_LINE('========================================================================');
+    DBMS_OUTPUT.PUT_LINE('- Actividad: ' || actividad.nombre);
+    DBMS_OUTPUT.PUT_LINE('- Objetivo: ' || actividad.objetivo);
+    DBMS_OUTPUT.PUT_LINE('------------------------------------------------------------------------');
+    FOR REG_Cues IN C_Cuestionarios LOOP
+        GET_ValoracionesPart(REG_Cues.OID_Cues, REG_Cues.OID_Part);
+    END LOOP;
+END GET_CuestionariosPart;
+/
+
+-- RF-2. Valoración de ACTIVIDADES mediante CUESTIONARIOS contestados por VOLUNTARIOS
+-- Procedimiento auxiliar que obtiene las valoraciones de un CUESTIONARIO contestado por un VOLUNTARIO
+CREATE OR REPLACE PROCEDURE GET_ValoracionesVol(w_OID_Cues CUESTIONARIOS.OID_Cues%TYPE, w_OID_Vol VOLUNTARIOS.OID_Vol%TYPE) IS
+    CURSOR C_Formularios IS
+        SELECT P.enunciado AS enunciado, R.contenido AS respuesta FROM FORMULARIOS F
+            LEFT JOIN RESPUESTAS R ON F.OID_Form=R.OID_Form
+            LEFT JOIN PREGUNTAS P ON F.OID_Q=P.OID_Q
+            WHERE F.OID_Cues=w_OID_Cues AND R.OID_Vol=w_OID_Vol;
+    CURSOR C_Voluntario IS
+        SELECT * FROM PERSONAS NATURAL JOIN VOLUNTARIOS WHERE OID_Vol=w_OID_Vol;
+BEGIN
+    FOR REG_Vol IN C_Voluntario LOOP
+        DBMS_OUTPUT.PUT_LINE('- VOLUNTARIO: ' || REG_Vol.nombre || ' ' || REG_Vol.apellidos || ' (' || REG_Vol.dni || ')');   
+    END LOOP;
+    FOR REG_Form IN C_Formularios LOOP
+        DBMS_OUTPUT.PUT_LINE('- ' || REG_Form.enunciado);
+        DBMS_OUTPUT.PUT_LINE('---> ' || REG_Form.respuesta);
+    END LOOP;
+    DBMS_OUTPUT.PUT_LINE('------------------------------------------------------------------------');
+END GET_ValoracionesVol;
+/
+CREATE OR REPLACE PROCEDURE GET_CuestionariosVol(w_OID_Act ACTIVIDADES.OID_Act%TYPE) IS
+    CURSOR C_Cuestionarios IS
+        SELECT DISTINCT C.OID_Cues AS OID_Cues, CO.OID_Vol AS OID_Vol FROM ACTIVIDADES A LEFT JOIN CUESTIONARIOS C ON A.OID_Act=C.OID_Act
+            LEFT JOIN COLABORACIONES CO ON A.OID_Act=CO.OID_Act LEFT JOIN RESPUESTAS R ON CO.OID_Vol=R.OID_Vol WHERE A.OID_Act=w_OID_Act
+            AND EXISTS (SELECT * FROM RESPUESTAS WHERE R.OID_Vol=CO.OID_Vol);
+    actividad ACTIVIDADES%ROWTYPE;
+BEGIN
+    SELECT * INTO actividad FROM ACTIVIDADES WHERE OID_Act=w_OID_Act;
+    DBMS_OUTPUT.PUT_LINE('========================================================================');
+    DBMS_OUTPUT.PUT_LINE('  CUESTIONARIOS DE ACTIVIDAD - VALORACIONES DE VOLUNTARIOS');
+    DBMS_OUTPUT.PUT_LINE('========================================================================');
+    DBMS_OUTPUT.PUT_LINE('- Actividad: ' || actividad.nombre);
+    DBMS_OUTPUT.PUT_LINE('- Objetivo: ' || actividad.objetivo);
+    DBMS_OUTPUT.PUT_LINE('------------------------------------------------------------------------');
+    FOR REG_Cues IN C_Cuestionarios LOOP
+        GET_ValoracionesVol(REG_Cues.OID_Cues, REG_Cues.OID_Vol);
+    END LOOP;
+END GET_CuestionariosVol;
 /
 
 -- RF-*. Lista de DONANTES
@@ -160,9 +240,42 @@ BEGIN
 END ListaDonantes;
 /
 
--- RF-2: VALORACIÓN DE ACTIVIDADES
--- CUESTIONARIOS DE VOLUNTARIOS
--- CUESTIONARIOS DE PARTICIPANTES
+-- RF-7. Lista de correos electrónicos según grupo de destinatarios ('participantes', 'voluntarios' 'tutores', 'patrocinadores')
+CREATE OR REPLACE PROCEDURE Lista_Email(grupo VARCHAR2) IS
+    CURSOR C_Participantes IS
+        SELECT email, nombre, apellidos FROM PERSONAS NATURAL JOIN PARTICIPANTES WHERE email IS NOT NULL;
+    CURSOR C_Voluntarios IS
+        SELECT email, nombre, apellidos FROM PERSONAS NATURAL JOIN VOLUNTARIOS WHERE email IS NOT NULL;
+    CURSOR C_TutoresLegales IS
+        SELECT email, nombre, apellidos FROM PERSONAS NATURAL JOIN TUTORESLEGALES WHERE email IS NOT NULL;
+    CURSOR C_Patrocinadores IS
+        SELECT email, nombre FROM INSTITUCIONES WHERE email IS NOT NULL AND esPatrocinador=1;
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('========================================================================');
+    DBMS_OUTPUT.PUT_LINE('  LISTA DE CORREO DE ' || UPPER(grupo));
+    DBMS_OUTPUT.PUT_LINE('========================================================================');
+    DBMS_OUTPUT.PUT_LINE(RPAD('EMAIL',35) || RPAD('NOMBRE',50));
+    IF (LOWER(grupo)='participantes') THEN
+        FOR REG_Part IN C_Participantes LOOP
+            DBMS_OUTPUT.PUT_LINE(RPAD(REG_Part.email,35) || RPAD(REG_Part.nombre || ' ' || REG_Part.apellidos,50));
+        END LOOP;
+    ELSIF (LOWER(grupo)='voluntarios') THEN
+        FOR REG_Vol IN C_Voluntarios LOOP
+            DBMS_OUTPUT.PUT_LINE(RPAD(REG_Vol.email,35) || RPAD(REG_Vol.nombre || ' ' || REG_Vol.apellidos,50));
+        END LOOP;
+    ELSIF (LOWER(grupo)='tutores') THEN
+        FOR REG_Tut IN C_TutoresLegales LOOP
+            DBMS_OUTPUT.PUT_LINE(RPAD(REG_Tut.email,35) || RPAD(REG_Tut.nombre || ' ' || REG_Tut.apellidos,50));
+        END LOOP;
+    ELSIF (LOWER(grupo)='patrocinadores') THEN
+        FOR REG_Ins IN C_Patrocinadores LOOP
+            DBMS_OUTPUT.PUT_LINE(RPAD(REG_Ins.email,35) || RPAD(REG_Ins.nombre, 50));
+        END LOOP;
+    ELSE
+        raise_application_error(-20600, 'No existe ningún grupo de destinatarios con ese nombre.');
+    END IF;
+END Lista_Email;
+/
 
 -- RF-8. Lista de VOLUNTARIOS en ACTIVIDAD
 CREATE OR REPLACE PROCEDURE Lista_VolAct(w_OID_Act ACTIVIDADES.OID_Act%TYPE) IS
