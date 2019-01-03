@@ -160,3 +160,28 @@ EXEC Inscribir_Voluntario('47339192V', 1);
 
 -- Insertar INFORMES MEDICOS
 INSERT INTO INFORMESMEDICOS(OID_Part,fecha,descripcion) VALUES (1,'20/12/2018','El paciente debe tomar la medicación prescrita dos veces al día, antes del almuerzo y antes de la cena.');
+
+-- Insertar CUESTIONARIO
+INSERT INTO CUESTIONARIOS(OID_Act, fechaCreacion) VALUES (1, '02/01/2019');
+INSERT INTO CUESTIONARIOS(OID_Act, fechaCreacion) VALUES (2, '01/01/2019');
+-- Insertar PREGUNTAS
+INSERT INTO PREGUNTAS(tipo, enunciado) VALUES ('textual', '¿Qué le ha parecido la actividad?');
+INSERT INTO PREGUNTAS(tipo, enunciado) VALUES ('textual', 'Sugerencias para mejorar en futuras ediciones:');
+INSERT INTO PREGUNTAS(tipo, enunciado) VALUES ('numerica', 'Valore de 0 a 10 la actividad.');
+-- Insertar FORMULARIOS
+INSERT INTO FORMULARIOS(OID_Cues, OID_Q) VALUES (1,1);
+INSERT INTO FORMULARIOS(OID_Cues, OID_Q) VALUES (1,2);
+INSERT INTO FORMULARIOS(OID_Cues, OID_Q) VALUES (1,3);
+INSERT INTO FORMULARIOS(OID_Cues, OID_Q) VALUES (2,1);
+INSERT INTO FORMULARIOS(OID_Cues, OID_Q) VALUES (2,2);
+INSERT INTO FORMULARIOS(OID_Cues, OID_Q) VALUES (2,3);
+-- Insertar RESPUESTAS
+INSERT INTO RESPUESTAS(OID_Form, OID_Part, OID_Vol, contenido) VALUES (1,1,null,'Me ha gustado mucho la actividad.');
+INSERT INTO RESPUESTAS(OID_Form, OID_Part, OID_Vol, contenido) VALUES (2,1,null,'Contrataría un grupo de música.');
+INSERT INTO RESPUESTAS(OID_Form, OID_Part, OID_Vol, contenido) VALUES (3,1,null,'8');
+INSERT INTO RESPUESTAS(OID_Form, OID_Part, OID_Vol, contenido) VALUES (1,null,1,'He tenido dificultades de adaptación con el participante que me fue asignado.');
+INSERT INTO RESPUESTAS(OID_Form, OID_Part, OID_Vol, contenido) VALUES (2,null,1,'Aumentaría el número de voluntario para poder apoyarnos.');
+INSERT INTO RESPUESTAS(OID_Form, OID_Part, OID_Vol, contenido) VALUES (3,null,1,'6');
+INSERT INTO RESPUESTAS(OID_Form, OID_Part, OID_Vol, contenido) VALUES (1,2,null,'La actividad me ha parecido muy acertada.');
+INSERT INTO RESPUESTAS(OID_Form, OID_Part, OID_Vol, contenido) VALUES (2,2,null,'Aumentaría el tiempo de los talleres de manualidades.');
+INSERT INTO RESPUESTAS(OID_Form, OID_Part, OID_Vol, contenido) VALUES (3,2,null,'7');
