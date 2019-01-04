@@ -132,6 +132,7 @@ EXEC Act_InteresParticipante('23987795C',2,1);
 EXEC Act_InteresParticipante('66641234M',2,1);
 EXEC Act_InteresParticipante('43761927D',1,1);
 EXEC Act_InteresParticipante('43761927D',2,1);
+EXEC Act_InteresVoluntariado('47339192V',2,1);
 
 -- Insertar PATROCINIOS
 INSERT INTO PATROCINIOS VALUES ('1','A87674532','500','2');
