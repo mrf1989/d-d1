@@ -82,12 +82,12 @@ INSERT INTO TUTORESLEGALES(dni) VALUES ('61340000T');
 INSERT INTO TUTORESLEGALES(dni) VALUES ('57153559V');
 
 -- Insertar PARTICIPANTES
-INSERT INTO PARTICIPANTES(dni, gradoDiscapacidad, prioridadParticipacion, OID_Tut, OID_Vol) VALUES ('23987795C', 0.4, 'alta', 3, 1);
+INSERT INTO PARTICIPANTES(dni, gradoDiscapacidad, prioridadParticipacion, OID_Tut, OID_Vol) VALUES ('23987795C', 0.7, 'alta', 3, 1);
 INSERT INTO PARTICIPANTES(dni, gradoDiscapacidad, prioridadParticipacion, OID_Tut, OID_Vol) VALUES ('66641234M', 0.6, 'media', 2, 2);
 INSERT INTO PARTICIPANTES(dni, gradoDiscapacidad, prioridadParticipacion, OID_Tut, OID_Vol) VALUES ('43761927D', 0.5, 'alta', 1, 3);
 INSERT INTO PARTICIPANTES(dni, gradoDiscapacidad, prioridadParticipacion, OID_Tut, OID_Vol) VALUES ('10226644R', 0.45, 'baja', 4, 4);
 INSERT INTO PARTICIPANTES(dni, gradoDiscapacidad, prioridadParticipacion, OID_Tut, OID_Vol) VALUES ('61188453K', 0.65, 'alta', 5, 5);
-INSERT INTO PARTICIPANTES(dni, gradoDiscapacidad, prioridadParticipacion, OID_Tut, OID_Vol) VALUES ('64090012E', 0.55, 'media', 6, 6);
+INSERT INTO PARTICIPANTES(dni, gradoDiscapacidad, prioridadParticipacion, OID_Tut, OID_Vol) VALUES ('64090012E', 0.4, 'media', 6, 6);
 INSERT INTO PARTICIPANTES(dni, gradoDiscapacidad, prioridadParticipacion, OID_Tut, OID_Vol) VALUES ('89125642G', 0.6, 'alta', 7, 2);
 INSERT INTO PARTICIPANTES(dni, gradoDiscapacidad, prioridadParticipacion, OID_Tut, OID_Vol) VALUES ('23559156L', 0.38, 'media', 8, 7);
 
@@ -127,17 +127,26 @@ EXEC Registrar_Proyecto('98385816W', 'Baloncesto Adaptado 2018', 'Centro Deporti
 EXEC Add_Actividad('Mercadillo de Navidad', 'Mejorar la integración social de las personas con discapacidad', '27/12/2018', '27/12/2018', 30, 'social', 0, 1);
 EXEC Add_Actividad('Campeonato 3x3 Basket adaptado', 'Ayudar a la mejora de la condición física de los participantes', '28/12/2018', '23/12/2018', 45, 'deportiva', 750, 2);
 
--- Insertar INTERES en ACTIVIDADES
-INSERT INTO ESTAINTERESADOEN(estado, OID_Vol, OID_Act) VALUES (1,1,1);
-INSERT INTO ESTAINTERESADOEN(estado, OID_Vol, OID_Act) VALUES (0,1,2);
-INSERT INTO ESTAINTERESADOEN(estado, OID_Part, OID_Act) VALUES (1,1,1);
-INSERT INTO ESTAINTERESADOEN(estado, OID_Part, OID_Act) VALUES (1,1,2);
+EXEC Act_InteresParticipante('23987795C',1,1);
+EXEC Act_InteresParticipante('23987795C',2,1);
+EXEC Act_InteresParticipante('66641234M',2,1);
+EXEC Act_InteresParticipante('43761927D',1,1);
+EXEC Act_InteresParticipante('43761927D',2,1);
 
 -- Insertar PATROCINIOS
-INSERT INTO PATROCINIOS VALUES ('1','A87674532','1800','2');
+INSERT INTO PATROCINIOS VALUES ('1','A87674532','500','2');
 INSERT INTO PATROCINIOS VALUES ('1','A87674532','2000','1');
 INSERT INTO PATROCINIOS VALUES ('2','A33219876','700','1');
 INSERT INTO PATROCINIOS VALUES ('3','B78998456','500','1');
+
+-- Insertar INFORMES MEDICOS
+INSERT INTO INFORMESMEDICOS(OID_Part,fecha,descripcion) VALUES (1,'20/12/2018','El paciente debe tomar la medicación prescrita dos veces al día, antes del almuerzo y antes de la cena.');
+INSERT INTO INFORMESMEDICOS(OID_Part,fecha,descripcion) VALUES (2,'15/02/2018','El paciente necesita una sesión de rehabilitación muscular cada dos días.');
+INSERT INTO INFORMESMEDICOS(OID_Part,fecha,descripcion) VALUES (6,'05/06/2018','El paciente presenta un cuadro de déficit de atención.');
+INSERT INTO INFORMESMEDICOS(OID_Part,fecha,descripcion) VALUES (3,'09/10/2018','El paciente debe tomar a primera hora de la mañana la dosis de 500mg de THJ-Omiplostam.');
+INSERT INTO INFORMESMEDICOS(OID_Part,fecha,descripcion) VALUES (3,'14/10/2018','El paciente presenta un grado de discapacidad del 65%.');
+INSERT INTO INFORMESMEDICOS(OID_Part,fecha,descripcion) VALUES (5,'08/03/2018','El paciente debe tomar la medicación prescrita tres veces al día, en cada ingesta de alimento.');
+INSERT INTO INFORMESMEDICOS(OID_Part,fecha,descripcion) VALUES (8,'09/08/2018','El paciente presenta un cuadro de déficit de atención.');
 
 --Inscribir en ACTIVIDADES
 EXEC Inscribir_Participante('23987795C', 1);
@@ -147,9 +156,9 @@ EXEC Inscribir_Participante('43761927D', 2);
 EXEC Inscribir_Participante('61188453K', 2);
 EXEC Inscribir_Participante('23559156L', 2);
 
-EXEC Act_Recibo(1, '28/02/2019', '16,67', 'pagado');
-EXEC Act_Recibo(2, '28/02/2019', '16,67', 'pagado');
-EXEC Act_Recibo(3, '28/02/2019', '16,67', 'pagado');
+EXEC Act_EstadoRecibo(1, 'pagado');
+EXEC Act_EstadoRecibo(2, 'pagado');
+EXEC Act_EstadoRecibo(3, 'pagado');
 
 EXEC Inscribir_Voluntario('47339192V', 2);
 EXEC Inscribir_Voluntario('12345678A', 2);
@@ -157,9 +166,6 @@ EXEC Inscribir_Voluntario('57231289R', 2);
 EXEC Inscribir_Voluntario('86239863A', 1);
 EXEC Inscribir_Voluntario('13227182M', 1);
 EXEC Inscribir_Voluntario('47339192V', 1);
-
--- Insertar INFORMES MEDICOS
-INSERT INTO INFORMESMEDICOS(OID_Part,fecha,descripcion) VALUES (1,'20/12/2018','El paciente debe tomar la medicación prescrita dos veces al día, antes del almuerzo y antes de la cena.');
 
 -- Insertar CUESTIONARIO
 INSERT INTO CUESTIONARIOS(OID_Act, fechaCreacion) VALUES (1, '02/01/2019');

@@ -43,7 +43,7 @@ BEGIN
             '(' || REG_Vol.dni || ')');
     END LOOP;
     DBMS_OUTPUT.PUT_LINE('------------------------------------------------------------------------');
-    DBMS_OUTPUT.PUT_LINE('Información médica');
+    DBMS_OUTPUT.PUT_LINE('Informes médicos');
     DBMS_OUTPUT.PUT_LINE('------------------------------------------------------------------------');
     DBMS_OUTPUT.PUT_LINE('- GRADO DE DISCAPACIDAD: ' || w_gradoDiscapacidad || '%');
     FOR REG_Inf IN C_InformesMedicos LOOP
@@ -321,9 +321,9 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('=======================================================================================================================');
     DBMS_OUTPUT.PUT_LINE('  HISTORIAL DE VOLUNTARIADO');
     DBMS_OUTPUT.PUT_LINE('=======================================================================================================================');
-    DBMS_OUTPUT.PUT_LINE(RPAD('Proyecto',40) || RPAD('OID_Act',10) || RPAD('Nombre',40) || RPAD('Inicio',15) || RPAD('Fin',15));
+    DBMS_OUTPUT.PUT_LINE(RPAD('Proyecto',40) || RPAD('OID_Act',10) || RPAD('Actividad',45) || RPAD('Inicio',15) || RPAD('Fin',15));
     FOR REG_Colab IN C_Colaboraciones LOOP
-        DBMS_OUTPUT.PUT_LINE(RPAD(REG_Colab.Proj_nombre,40) || RPAD(REG_Colab.OID_Act,10) || RPAD(REG_Colab.Act_nombre,40) || 
+        DBMS_OUTPUT.PUT_LINE(RPAD(REG_Colab.Proj_nombre,40) || RPAD(REG_Colab.OID_Act,10) || RPAD(REG_Colab.Act_nombre,45) || 
             RPAD(REG_Colab.Act_fInicio,15) || RPAD(REG_Colab.Act_fFin,15));
     END LOOP;
 END Lista_HistVol;
@@ -344,19 +344,19 @@ CREATE OR REPLACE PROCEDURE Lista_PartAct(w_OID_Act ACTIVIDADES.OID_Act%TYPE) IS
             LEFT JOIN PERSONAS PER2 ON T.dni=PER2.dni
             WHERE OID_Act=w_OID_Act;
 BEGIN
-    DBMS_OUTPUT.PUT_LINE(RPAD('OID_ACT',10) || RPAD('ACTIVIDAD',35) || RPAD('Nº VOL REQUERIDOS',20) || 
+    DBMS_OUTPUT.PUT_LINE(RPAD('OID_ACT',10) || RPAD('ACTIVIDAD',40) || RPAD('Nº VOL REQUERIDOS',20) || 
         RPAD('TIPO',20) || RPAD('COSTE TOTAL',20) || RPAD('COSTE INSCRIPCIÓN',20));
     FOR REG_Act IN C_Actividad LOOP
-        DBMS_OUTPUT.PUT_LINE(RPAD(REG_Act.OID_Act,10) || RPAD(REG_Act.nombre,35) || RPAD(REG_Act.voluntariosRequeridos,20) || 
+        DBMS_OUTPUT.PUT_LINE(RPAD(REG_Act.OID_Act,10) || RPAD(REG_Act.nombre,40) || RPAD(REG_Act.voluntariosRequeridos,20) || 
             RPAD(REG_Act.tipo,20) || RPAD(REG_Act.costeTotal || ' €',20) || RPAD(REG_Act.costeInscripcion || ' €',20)); 
     END LOOP;
     DBMS_OUTPUT.PUT_LINE('=======================================================================================================================');
     DBMS_OUTPUT.PUT_LINE('  PARTICIPANTES DE LA ACTIVIDAD');
     DBMS_OUTPUT.PUT_LINE('=======================================================================================================================');
-    DBMS_OUTPUT.PUT_LINE(RPAD('DNI',15) || RPAD('Nombre',30) || RPAD('Nacimiento',12) || RPAD('% discapacidad', 15) || RPAD('|',2) ||
+    DBMS_OUTPUT.PUT_LINE(RPAD('DNI',15) || RPAD('Nombre',45) || RPAD('Nacimiento',12) || RPAD('% discapacidad', 15) || RPAD('|',2) ||
         RPAD('Tutor Legal', 35) || RPAD('Teléfono', 12) || RPAD('Email',25));
     FOR REG_Part IN C_Participantes LOOP
-        DBMS_OUTPUT.PUT_LINE(RPAD(REG_Part.Part_dni,15) || RPAD(REG_Part.Part_nombre || ' ' || REG_Part.Part_apellidos,30) ||
+        DBMS_OUTPUT.PUT_LINE(RPAD(REG_Part.Part_dni,15) || RPAD(REG_Part.Part_nombre || ' ' || REG_Part.Part_apellidos,45) ||
             RPAD(REG_Part.Part_fechaNacimiento,12) || RPAD(REG_Part.gradoDiscapacidad * 100 || ' %', 15) || RPAD('|',2) ||
             RPAD(REG_Part.Tut_nombre || ' ' || REG_Part.Tut_apellidos,35) || RPAD(REG_Part.Tut_telefono, 12) || RPAD(REG_Part.Tut_email,25));
     END LOOP;
@@ -382,9 +382,9 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('=======================================================================================================================');
     DBMS_OUTPUT.PUT_LINE('  HISTORIAL DE PARTICIPACIÓN');
     DBMS_OUTPUT.PUT_LINE('=======================================================================================================================');
-    DBMS_OUTPUT.PUT_LINE(RPAD('Proyecto',40) || RPAD('OID_Act',10) || RPAD('Nombre',40) || RPAD('Inicio',15) || RPAD('Fin',15));
+    DBMS_OUTPUT.PUT_LINE(RPAD('Proyecto',40) || RPAD('OID_Act',10) || RPAD('Actividad',45) || RPAD('Inicio',15) || RPAD('Fin',15));
     FOR REG_Ins IN C_Inscripciones LOOP
-        DBMS_OUTPUT.PUT_LINE(RPAD(REG_Ins.Proj_nombre,40) || RPAD(REG_Ins.OID_Act,10) || RPAD(REG_Ins.Act_nombre,40) || 
+        DBMS_OUTPUT.PUT_LINE(RPAD(REG_Ins.Proj_nombre,40) || RPAD(REG_Ins.OID_Act,10) || RPAD(REG_Ins.Act_nombre,45) || 
             RPAD(REG_Ins.Act_fInicio,15) || RPAD(REG_Ins.Act_fFin,15));
     END LOOP;
 END Lista_HistPart;

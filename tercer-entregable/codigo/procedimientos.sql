@@ -388,6 +388,14 @@ BEGIN
 END Act_Recibo;
 /
 
+-- Cambiar estado de RECIBO en el sistema de información
+CREATE OR REPLACE PROCEDURE Act_EstadoRecibo (w_OID_Rec IN RECIBOS.OID_Rec%TYPE, w_estado IN RECIBOS.estado%TYPE) IS
+BEGIN
+    UPDATE RECIBOS SET estado=w_estado WHERE OID_Rec=w_OID_Rec;
+    COMMIT WORK;
+END Act_EstadoRecibo;
+/
+
 -------------------------------------------------------------------------------
 -- 8. Registro de cuestionarios
 -------------------------------------------------------------------------------

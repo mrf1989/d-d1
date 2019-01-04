@@ -52,16 +52,10 @@ CREATE OR REPLACE TRIGGER REPRESENTANTE_LEGAL
 BEFORE INSERT ON PARTICIPANTES
 FOR EACH ROW
 DECLARE
-    w_dni PARTICIPANTES.dni%TYPE;
     w_fechaNacimiento PERSONAS.fechaNacimiento%TYPE;
-    w_gradoDiscapacidad PARTICIPANTES.gradoDiscapacidad%TYPE;
-    w_OID_Tut TUTORESLEGALES.OID_Tut%TYPE;
 BEGIN
-    w_dni:=:NEW.dni;
-    SELECT fechaNacimiento INTO w_fechaNacimiento FROM PERSONAS WHERE dni=w_dni;
-    w_gradoDiscapacidad:=:NEW.gradoDiscapacidad;
-    w_OID_Tut:=:NEW.OID_Tut;
-    IF (w_OID_Tut IS NULL AND NOT esMayorDeEdad(w_fechaNacimiento) OR w_gradoDiscapacidad > 0.5) THEN
+    SELECT fechaNacimiento INTO w_fechaNacimiento FROM PERSONAS WHERE dni=:NEW.dni;
+    IF (:NEW.OID_Tut IS NULL AND (NOT esMayorDeEdad(w_fechaNacimiento) OR :NEW.gradoDiscapacidad > 0.5)) THEN
         raise_application_error(-20600, 'Si el participante es menor de edad o tiene un grado de discapacidad superior al 50% debe tener asignado un tutor legal.');
     END IF;
 END REPRESENTANTE_LEGAL;
@@ -112,7 +106,7 @@ END VOLUNTARIO_INSCRITO;
 /
 
 -- RN-7. Estado de interés en actividades
-CREATE OR REPLACE TRIGGER ESTADO_INTERES_ACT
+CREATE OR REPLACE TRIGGER ESTADO_INTERES_ACT_PART
 AFTER INSERT ON ACTIVIDADES
 FOR EACH ROW
 DECLARE
@@ -125,10 +119,26 @@ BEGIN
         w_OID_Part:=participante.OID_Part;
         INSERT INTO ESTAINTERESADOEN(OID_Vol, OID_Part, OID_Act, estado) VALUES (null, w_OID_Part, w_OID_Act, 0);
     END LOOP;
-END ESTADO_INTERES_ACT;
+END ESTADO_INTERES_ACT_PART;
 /
 
--- RN-8. EnvÃ­o de mensajes
+CREATE OR REPLACE TRIGGER ESTADO_INTERES_ACT_VOL
+AFTER INSERT ON ACTIVIDADES
+FOR EACH ROW
+DECLARE
+    w_OID_Vol VOLUNTARIOS.OID_Vol%TYPE;
+    w_OID_Act ACTIVIDADES.OID_Act%TYPE;
+    CURSOR C_VOLUNTARIOS IS SELECT OID_Vol FROM VOLUNTARIOS;
+BEGIN
+    w_OID_Act:=:NEW.OID_Act;
+    FOR voluntario IN C_VOLUNTARIOS LOOP
+        w_OID_Vol:=voluntario.OID_Vol;
+        INSERT INTO ESTAINTERESADOEN(OID_Vol, OID_Part, OID_Act, estado) VALUES (w_OID_Vol, null, w_OID_Act, 0);
+    END LOOP;
+END ESTADO_INTERES_ACT_VOL;
+/
+
+-- RN-8. Envío de mensajes
 CREATE OR REPLACE TRIGGER ENVIO_MENSAJE
 BEFORE INSERT ON ENVIOS
 FOR EACH ROW
@@ -216,4 +226,15 @@ BEGIN
 END PLAZO_CUESTIONARIO;
 /
 
-
+-- RN-*. Cálculo de voluntarios necesarios por actividad
+CREATE OR REPLACE TRIGGER VOL_REQUERIDOS
+AFTER INSERT ON INSCRIPCIONES
+FOR EACH ROW
+DECLARE
+    n_voluntarios ACTIVIDADES.voluntariosRequeridos%TYPE;
+BEGIN
+    SELECT voluntariosRequeridos INTO n_voluntarios FROM ACTIVIDADES WHERE OID_Act=:NEW.OID_Act;
+    n_voluntarios:=n_voluntarios + 1;
+    UPDATE ACTIVIDADES SET voluntariosRequeridos=n_voluntarios WHERE OID_Act=:NEW.OID_Act;
+END VOL_REQUERIDOS;
+/
