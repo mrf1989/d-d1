@@ -7,9 +7,10 @@ CREATE OR REPLACE PROCEDURE FichaParticipante(w_OID_Part PARTICIPANTES.OID_Part%
     CURSOR C_Participante IS
         SELECT * FROM PARTICIPANTES NATURAL JOIN PERSONAS WHERE OID_Part=w_OID_Part;
     CURSOR C_Intereses IS
-        SELECT nombre FROM ACTIVIDADES NATURAL JOIN ESTAINTERESADOEN WHERE OID_Part=w_OID_Part AND estado=1;
+        SELECT nombre FROM ACTIVIDADES NATURAL JOIN ESTAINTERESADOEN WHERE OID_Part=w_OID_Part AND estado=1
+            ORDER BY fechaInicio ASC;
     CURSOR C_InformesMedicos IS
-        SELECT * FROM INFORMESMEDICOS WHERE OID_Part=w_OID_Part;
+        SELECT * FROM INFORMESMEDICOS WHERE OID_Part=w_OID_Part ORDER BY fecha DESC;
     CURSOR C_Voluntario IS
         SELECT P.dni, P.nombre, P.apellidos FROM PARTICIPANTES PART 
             LEFT JOIN VOLUNTARIOS VOL ON PART.OID_Vol=VOL.OID_Vol
@@ -66,12 +67,8 @@ CREATE OR REPLACE PROCEDURE FichaVoluntario(w_OID_Vol VOLUNTARIOS.OID_Vol%TYPE) 
     CURSOR C_Voluntario IS
         SELECT * FROM VOLUNTARIOS NATURAL JOIN PERSONAS WHERE OID_Vol=w_OID_Vol;
     CURSOR C_Intereses IS
-    /*  ESTO NO ESTA MAL, PERO NO ES NECESARIO HACERLO ASI
-    
-        SELECT nombre FROM ACTIVIDADES ACT LEFT JOIN ESTAINTERESADOEN EI ON ACT.OID_Act=EI.OID_Act
-            LEFT JOIN VOLUNTARIOS VOL ON VOL.OID_Vol=EI.OID_Vol;
-    */
-        SELECT nombre FROM ACTIVIDADES NATURAL JOIN ESTAINTERESADOEN NATURAL JOIN VOLUNTARIOS WHERE estado=1;
+        SELECT nombre FROM ACTIVIDADES NATURAL JOIN ESTAINTERESADOEN WHERE OID_Vol=w_OID_Vol AND estado=1
+            ORDER BY fechaInicio ASC;
 BEGIN 
     FOR REG_Vol IN C_Voluntario LOOP
         DBMS_OUTPUT.PUT_LINE('========================================================================');
@@ -100,7 +97,7 @@ CREATE OR REPLACE PROCEDURE FichaPatrocinador(w_cif INSTITUCIONES.cif%TYPE) IS
     CURSOR C_Patrocinador IS
         SELECT * FROM INSTITUCIONES WHERE cif=w_cif AND esPatrocinador=1;
     CURSOR C_Patrocinios IS
-        SELECT cantidad, nombre FROM ACTIVIDADES NATURAL JOIN PATROCINIOS WHERE cif=w_cif;
+        SELECT cantidad, nombre FROM ACTIVIDADES NATURAL JOIN PATROCINIOS WHERE cif=w_cif ORDER BY cantidad DESC;
 BEGIN
     FOR REG_Ins IN C_Patrocinador LOOP
         DBMS_OUTPUT.PUT_LINE('========================================================================');
@@ -205,16 +202,18 @@ BEGIN
 END GET_CuestionariosVol;
 /
 
--- RF-*. Lista de DONANTES
+-- RF-6. Lista de DONANTES
 CREATE OR REPLACE PROCEDURE ListaDonantes IS
     CURSOR C_DonantesP IS
         SELECT dni, nombre, apellidos, direccion, localidad, codigoPostal, provincia, telefono, COUNT(*) AS n_donaciones
             FROM PERSONAS NATURAL JOIN DONACIONES
-            GROUP BY dni, nombre, apellidos, direccion, localidad, codigoPostal, provincia, telefono;
+            GROUP BY dni, nombre, apellidos, direccion, localidad, codigoPostal, provincia, telefono
+            ORDER BY n_donaciones DESC;
     CURSOR C_DonantesI IS
         SELECT cif, nombre, direccion, localidad, codigoPostal, provincia, telefono, COUNT(*) AS n_donaciones
             FROM INSTITUCIONES NATURAL JOIN DONACIONES
-            GROUP BY cif, nombre, direccion, localidad, codigoPostal, provincia, telefono;
+            GROUP BY cif, nombre, direccion, localidad, codigoPostal, provincia, telefono
+            ORDER BY n_donaciones DESC;
 BEGIN
     DBMS_OUTPUT.PUT_LINE('========================================================================');
     DBMS_OUTPUT.PUT_LINE('  LISTA DE DONANTES');
@@ -243,11 +242,11 @@ END ListaDonantes;
 -- RF-7. Lista de correos electrónicos según grupo de destinatarios ('participantes', 'voluntarios' 'tutores', 'patrocinadores')
 CREATE OR REPLACE PROCEDURE Lista_Email(grupo VARCHAR2) IS
     CURSOR C_Participantes IS
-        SELECT email, nombre, apellidos FROM PERSONAS NATURAL JOIN PARTICIPANTES WHERE email IS NOT NULL;
+        SELECT email, nombre, apellidos FROM PERSONAS NATURAL JOIN PARTICIPANTES WHERE email IS NOT NULL ORDER BY apellidos;
     CURSOR C_Voluntarios IS
-        SELECT email, nombre, apellidos FROM PERSONAS NATURAL JOIN VOLUNTARIOS WHERE email IS NOT NULL;
+        SELECT email, nombre, apellidos FROM PERSONAS NATURAL JOIN VOLUNTARIOS WHERE email IS NOT NULL ORDER BY apellidos;
     CURSOR C_TutoresLegales IS
-        SELECT email, nombre, apellidos FROM PERSONAS NATURAL JOIN TUTORESLEGALES WHERE email IS NOT NULL;
+        SELECT email, nombre, apellidos FROM PERSONAS NATURAL JOIN TUTORESLEGALES WHERE email IS NOT NULL ORDER BY apellidos;
     CURSOR C_Patrocinadores IS
         SELECT email, nombre FROM INSTITUCIONES WHERE email IS NOT NULL AND esPatrocinador=1;
 BEGIN
@@ -257,15 +256,15 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE(RPAD('EMAIL',35) || RPAD('NOMBRE',50));
     IF (LOWER(grupo)='participantes') THEN
         FOR REG_Part IN C_Participantes LOOP
-            DBMS_OUTPUT.PUT_LINE(RPAD(REG_Part.email,35) || RPAD(REG_Part.nombre || ' ' || REG_Part.apellidos,50));
+            DBMS_OUTPUT.PUT_LINE(RPAD(REG_Part.email,35) || RPAD(REG_Part.apellidos || ', ' || REG_Part.nombre,50));
         END LOOP;
     ELSIF (LOWER(grupo)='voluntarios') THEN
         FOR REG_Vol IN C_Voluntarios LOOP
-            DBMS_OUTPUT.PUT_LINE(RPAD(REG_Vol.email,35) || RPAD(REG_Vol.nombre || ' ' || REG_Vol.apellidos,50));
+            DBMS_OUTPUT.PUT_LINE(RPAD(REG_Vol.email,35) || RPAD(REG_Vol.apellidos || ', ' || REG_Vol.nombre,50));
         END LOOP;
     ELSIF (LOWER(grupo)='tutores') THEN
         FOR REG_Tut IN C_TutoresLegales LOOP
-            DBMS_OUTPUT.PUT_LINE(RPAD(REG_Tut.email,35) || RPAD(REG_Tut.nombre || ' ' || REG_Tut.apellidos,50));
+            DBMS_OUTPUT.PUT_LINE(RPAD(REG_Tut.email,35) || RPAD(REG_Tut.apellidos || ', ' || REG_Tut.nombre,50));
         END LOOP;
     ELSIF (LOWER(grupo)='patrocinadores') THEN
         FOR REG_Ins IN C_Patrocinadores LOOP
@@ -282,7 +281,8 @@ CREATE OR REPLACE PROCEDURE Lista_VolAct(w_OID_Act ACTIVIDADES.OID_Act%TYPE) IS
     CURSOR C_Actividad IS
         SELECT * FROM ACTIVIDADES WHERE OID_Act=w_OID_Act;
     CURSOR C_Voluntarios IS
-        SELECT * FROM PERSONAS NATURAL JOIN VOLUNTARIOS V LEFT JOIN COLABORACIONES C ON V.OID_Vol=C.OID_Vol WHERE OID_Act=w_OID_Act;
+        SELECT * FROM PERSONAS NATURAL JOIN VOLUNTARIOS V LEFT JOIN COLABORACIONES C ON V.OID_Vol=C.OID_Vol
+            WHERE OID_Act=w_OID_Act ORDER BY apellidos;
 BEGIN
     DBMS_OUTPUT.PUT_LINE(RPAD('OID_ACT',10) || RPAD('ACTIVIDAD',35) || RPAD('Nº VOL REQUERIDOS',20) || 
         RPAD('TIPO',20) || RPAD('COSTE TOTAL',20) || RPAD('COSTE INSCRIPCIÓN',20));
@@ -311,12 +311,12 @@ CREATE OR REPLACE PROCEDURE Lista_HistVol(w_OID_Vol VOLUNTARIOS.OID_Vol%TYPE) IS
             FROM PERSONAS NATURAL JOIN VOLUNTARIOS NATURAL JOIN COLABORACIONES C
             LEFT JOIN ACTIVIDADES A ON A.OID_Act=C.OID_Act
             LEFT JOIN PROYECTOS P ON P.OID_Proj=A.OID_Proj
-            WHERE OID_Vol=w_OID_Vol;
+            WHERE OID_Vol=w_OID_Vol ORDER BY A.fechaInicio DESC;
 BEGIN
-    DBMS_OUTPUT.PUT_LINE(RPAD('OID_VOL',10) || RPAD('DNI',15) || RPAD('NOMBRE',35) || RPAD('EMAIL',25) || RPAD('TELEFONO',15));
+    DBMS_OUTPUT.PUT_LINE(RPAD('OID_VOL',10) || RPAD('DNI',15) || RPAD('NOMBRE',35) || RPAD('EMAIL',35) || RPAD('TELEFONO',15));
     FOR REG_Vol IN C_Voluntario LOOP
         DBMS_OUTPUT.PUT_LINE(RPAD(REG_Vol.OID_Vol,10) || RPAD(REG_Vol.dni,15) || RPAD(REG_Vol.nombre || ' ' || REG_Vol.apellidos,35) ||
-            RPAD(REG_Vol.email,25) || RPAD(REG_Vol.telefono,15));
+            RPAD(REG_Vol.email,35) || RPAD(REG_Vol.telefono,15));
     END LOOP;
     DBMS_OUTPUT.PUT_LINE('=======================================================================================================================');
     DBMS_OUTPUT.PUT_LINE('  HISTORIAL DE VOLUNTARIADO');
@@ -334,7 +334,6 @@ CREATE OR REPLACE PROCEDURE Lista_PartAct(w_OID_Act ACTIVIDADES.OID_Act%TYPE) IS
     CURSOR C_Actividad IS
         SELECT * FROM ACTIVIDADES WHERE OID_Act=w_OID_Act;
     CURSOR C_Participantes IS
-        --SELECT * FROM PERSONAS NATURAL JOIN PARTICIPANTES P LEFT JOIN INSCRIPCIONES I ON P.OID_Part=I.OID_Part WHERE OID_Act=w_OID_Act;
         SELECT PER1.dni AS Part_dni, PER1.nombre AS Part_nombre, PER1.apellidos AS Part_apellidos, PER1.fechaNacimiento AS Part_fechaNacimiento,
             PART.gradoDiscapacidad AS gradoDiscapacidad, PER2.nombre AS Tut_nombre, PER2.apellidos AS Tut_apellidos, PER2.email AS Tut_email,
             PER2.telefono AS Tut_telefono FROM PERSONAS PER1
@@ -342,7 +341,7 @@ CREATE OR REPLACE PROCEDURE Lista_PartAct(w_OID_Act ACTIVIDADES.OID_Act%TYPE) IS
             LEFT JOIN INSCRIPCIONES I ON PART.OID_Part=I.OID_Part
             LEFT JOIN TUTORESLEGALES T ON T.OID_Tut=PART.OID_Tut
             LEFT JOIN PERSONAS PER2 ON T.dni=PER2.dni
-            WHERE OID_Act=w_OID_Act;
+            WHERE OID_Act=w_OID_Act ORDER BY PER1.apellidos;
 BEGIN
     DBMS_OUTPUT.PUT_LINE(RPAD('OID_ACT',10) || RPAD('ACTIVIDAD',40) || RPAD('Nº VOL REQUERIDOS',20) || 
         RPAD('TIPO',20) || RPAD('COSTE TOTAL',20) || RPAD('COSTE INSCRIPCIÓN',20));
@@ -372,12 +371,12 @@ CREATE OR REPLACE PROCEDURE Lista_HistPart(w_OID_Part PARTICIPANTES.OID_Part%TYP
             FROM PERSONAS NATURAL JOIN PARTICIPANTES NATURAL JOIN INSCRIPCIONES I
             LEFT JOIN ACTIVIDADES A ON A.OID_Act=I.OID_Act
             LEFT JOIN PROYECTOS P ON P.OID_Proj=A.OID_Proj
-            WHERE OID_Part=w_OID_Part;
+            WHERE OID_Part=w_OID_Part ORDER BY A.fechaInicio DESC;
 BEGIN
-    DBMS_OUTPUT.PUT_LINE(RPAD('OID_PART',10) || RPAD('DNI',15) || RPAD('NOMBRE',35) || RPAD('TELEFONO',15) || RPAD('EMAIL',25));
+    DBMS_OUTPUT.PUT_LINE(RPAD('OID_PART',10) || RPAD('DNI',15) || RPAD('NOMBRE',35) || RPAD('TELEFONO',15) || RPAD('EMAIL',35));
     FOR REG_Vol IN C_Participante LOOP
         DBMS_OUTPUT.PUT_LINE(RPAD(REG_Vol.OID_Vol,10) || RPAD(REG_Vol.dni,15) || RPAD(REG_Vol.nombre || ' ' || REG_Vol.apellidos,35) ||
-            RPAD(REG_Vol.telefono,15) || RPAD(REG_Vol.email,25));
+            RPAD(REG_Vol.telefono,15) || RPAD(REG_Vol.email,35));
     END LOOP;
     DBMS_OUTPUT.PUT_LINE('=======================================================================================================================');
     DBMS_OUTPUT.PUT_LINE('  HISTORIAL DE PARTICIPACIÓN');
@@ -395,7 +394,7 @@ CREATE OR REPLACE PROCEDURE Lista_PatrociniosAct(w_OID_Act ACTIVIDADES.OID_Act%T
     CURSOR C_Actividad IS
         SELECT * FROM ACTIVIDADES WHERE OID_Act=w_OID_Act;
     CURSOR C_Patrocinios IS
-        SELECT * FROM PATROCINIOS NATURAL JOIN INSTITUCIONES WHERE OID_Act=w_OID_Act;
+        SELECT * FROM PATROCINIOS NATURAL JOIN INSTITUCIONES WHERE OID_Act=w_OID_Act ORDER BY cantidad DESC;
 BEGIN
     DBMS_OUTPUT.PUT_LINE(RPAD('OID_ACT',10) || RPAD('ACTIVIDAD',35) || RPAD('Nº VOL REQUERIDOS',20) || 
         RPAD('TIPO',20) || RPAD('COSTE TOTAL',20) || RPAD('COSTE INSCRIPCIÓN',20));
