@@ -1,3 +1,15 @@
+-------------------------------------------------------------------------------
+-- Proyecto: Deporte y Desafío
+-- ID Proyecto: IS-G1-SSR_dep&des
+-- Grupo de trabajo:
+-- Mario Ruano Fernández
+-- María Elena Molino Peña
+-- Alejandro José Muñoz Aranda
+-- Juan Carlos Cortés Muñoz
+
+-- script: 5_pruebas_IS-G1-SSR_dep&des.sql
+-------------------------------------------------------------------------------
+
 SET SERVEROUTPUT ON;
 
 -- Función auxiliar
@@ -2078,17 +2090,17 @@ OID_Inf INTEGER;
 OID_Inf2 INTEGER;
 BEGIN
 pruebas_informesmedicos.inicializar;
-pruebas_informesmedicos.insertar('Prueba 1- insertar informemedico correctamente', 2, 'Se trata de un paciente femenino que presenta claros sintomas...', '04/06/2017', true);
+pruebas_informesmedicos.insertar('Prueba 60- insertar informemedico correctamente', 2, 'Se trata de un paciente femenino que presenta claros sintomas...', '04/06/2017', true);
 OID_Inf:=SEC_INF.CURRVAL;
-pruebas_informesmedicos.insertar('Prueba 1- insertar informemedico correctamente', 3, 'Se trata de un paciente femenino que presenta claros sintomas...', '05/08/2018', true);
+pruebas_informesmedicos.insertar('Prueba 61- insertar informemedico correctamente', 3, 'Se trata de un paciente femenino que presenta claros sintomas...', '05/08/2018', true);
 OID_Inf2:=SEC_INF.CURRVAL;
-pruebas_informesmedicos.insertar('Prueba 1- insertar informemedico correctamente', 2,'La mejora notable de las sesiones de fisioterapia...', '23/06/2018', true);
-pruebas_informesmedicos.insertar('Prueba 2- insertar informemedico con OID_Part null', NULL, 'Se trata de un paciente femenino que presenta claros sintomas...', '05/06/2018', false);
-pruebas_informesmedicos.insertar('Prueba 3- insertar informemedico con descripcion null', 2,NULL, '24/01/2016',false);
-pruebas_informesmedicos.insertar('Prueba 4- insertar informemedico con fecha null', 2, 'Se trata de un paciente femenino que presenta claros sintomas...', NULL, false);
-pruebas_informesmedicos.actualizar('Prueba 1- actualizar informemedico',oid_Inf2, 3,'A día 01/06/2018, nos encontramos ante...', '04/06/2018', true);
-pruebas_informesmedicos.actualizar('Prueba 1- actualizar informemedico con descripción null',oid_Inf2, 3,NULL, '04/06/2018', false);
-pruebas_informesmedicos.eliminar('Prueba 1- eliminar informemedico',oid_Inf, true);
+pruebas_informesmedicos.insertar('Prueba 62- insertar informemedico correctamente', 2,'La mejora notable de las sesiones de fisioterapia...', '23/06/2018', true);
+pruebas_informesmedicos.insertar('Prueba 63- insertar informemedico con OID_Part null', NULL, 'Se trata de un paciente femenino que presenta claros sintomas...', '05/06/2018', false);
+pruebas_informesmedicos.insertar('Prueba 64- insertar informemedico con descripcion null', 2,NULL, '24/01/2016',false);
+pruebas_informesmedicos.insertar('Prueba 65- insertar informemedico con fecha null', 2, 'Se trata de un paciente femenino que presenta claros sintomas...', NULL, false);
+pruebas_informesmedicos.actualizar('Prueba 66- actualizar informemedico',oid_Inf2, 3,'A día 01/06/2018, nos encontramos ante...', '04/06/2018', true);
+pruebas_informesmedicos.actualizar('Prueba 67- actualizar informemedico con descripción null',oid_Inf2, 3,NULL, '04/06/2018', false);
+pruebas_informesmedicos.eliminar('Prueba 68- eliminar informemedico',oid_Inf, true);
 END;
 /
 --PRUEBAS_PROYECTOS
@@ -2097,19 +2109,19 @@ OID_Proj INTEGER;
 OID_Proj2 INTEGER;
 BEGIN
 pruebas_proyectos.inicializar;
-pruebas_proyectos.insertar('Prueba 1- inserción proyecto correctamente', 'Curso de Padel','Urban Padel Madrid', 1, 0, true);
+pruebas_proyectos.insertar('Prueba 69- inserción proyecto correctamente', 'Curso de Padel','Urban Padel Madrid', 1, 0, true);
 OID_Proj:=SEC_PROJ.CURRVAL;
-pruebas_proyectos.insertar('Prueba 2- inserción proyecto correctamente', 'Ruta Senderista Cascadas del Purgatorio', 'Valle Alto del Lozoya, Madrid', 0, 1,true);
+pruebas_proyectos.insertar('Prueba 70- inserción proyecto correctamente', 'Ruta Senderista Cascadas del Purgatorio', 'Valle Alto del Lozoya, Madrid', 0, 1,true);
 OID_Proj2:=SEC_PROJ.CURRVAL;
-pruebas_proyectos.insertar('Prueba 3- inserción proyecto correctamente', 'Esquí sobre hielo','Pabellón de Hielo de Leganés',0,1, true);
-pruebas_proyectos.insertar('Prueba 4- inserción proyecto correctamente', 'Curso de Natación avanzado','Centro Deportivo Municipal Francos Rodrigez',0,1, true);
-pruebas_proyectos.insertar('Prueba 5- inserción proyecto nombre null', NULL,'Pabellón de Hielo de Leganés',0,1,false);
-pruebas_proyectos.insertar('Prueba 6- inserción proyecto con ubicación null', 'Torneo de Fútbol', NULL, 1, 0, false);
-pruebas_proyectos.insertar('Prueba 7- inserción proyecto con esEvento null','Ruta Senderista Monte Abantos','San Lorenzo del Escorial, Madrid',NULL, 0, false);
-pruebas_proyectos.insertar('Prueba 8- inserción proyecto con esProgDep null','Curso de Padel','Urban Padel Madrid',1, NULL, false);
-pruebas_proyectos.actualizar('Prueba 1- actualizar proyecto correctamente', OID_Proj,'Curso de Padel','Padel Space Madrid',1,0,true);
-pruebas_proyectos.actualizar('Prueba 2- actualizar proyecto con nombre null',OID_Proj2,NULL,'Valle Alto del Lozoya, Madrid',1,0, false );
-pruebas_proyectos.eliminar('Prueba 1- elimiar proyecto',OID_Proj, true);
+pruebas_proyectos.insertar('Prueba 71- inserción proyecto correctamente', 'Esquí sobre hielo','Pabellón de Hielo de Leganés',0,1, true);
+pruebas_proyectos.insertar('Prueba 72- inserción proyecto correctamente', 'Curso de Natación avanzado','Centro Deportivo Municipal Francos Rodrigez',0,1, true);
+pruebas_proyectos.insertar('Prueba 73- inserción proyecto nombre null', NULL,'Pabellón de Hielo de Leganés',0,1,false);
+pruebas_proyectos.insertar('Prueba 74- inserción proyecto con ubicación null', 'Torneo de Fútbol', NULL, 1, 0, false);
+pruebas_proyectos.insertar('Prueba 75- inserción proyecto con esEvento null','Ruta Senderista Monte Abantos','San Lorenzo del Escorial, Madrid',NULL, 0, false);
+pruebas_proyectos.insertar('Prueba 76- inserción proyecto con esProgDep null','Curso de Padel','Urban Padel Madrid',1, NULL, false);
+pruebas_proyectos.actualizar('Prueba 77- actualizar proyecto correctamente', OID_Proj,'Curso de Padel','Padel Space Madrid',1,0,true);
+pruebas_proyectos.actualizar('Prueba 78- actualizar proyecto con nombre null',OID_Proj2,NULL,'Valle Alto del Lozoya, Madrid',1,0, false );
+pruebas_proyectos.eliminar('Prueba 79- elimiar proyecto',OID_Proj, true);
 END;
 /
 --PRUEBAS_ENCARGADOS
@@ -2118,16 +2130,16 @@ OID_RP INTEGER;
 OID_RP2 INTEGER;
 BEGIN
 pruebas_encargados.inicializar;
-pruebas_encargados.insertar('Prueba 1- insertar encargado', 2, 2, true);
+pruebas_encargados.insertar('Prueba 80- insertar encargado', 2, 2, true);
 OID_RP:=SEC_RP.CURRVAL;
-pruebas_encargados.insertar('Prueba 2-insertar encargado', 2, 2,true);
+pruebas_encargados.insertar('Prueba 81-insertar encargado', 2, 2,true);
 OID_RP2:=SEC_RP.CURRVAL;
-pruebas_encargados.insertar('Prueba 3- inertar encargado', 4, 3, true);
-pruebas_encargados.insertar('Prueba 4- insertar encargado con OID_Proj null',NULL, 2, false);
-pruebas_encargados.insertar('Prueba 5- insertar encargado con OID_Coord null', 2, NULL, false);
-pruebas_encargados.actualizar('Prueba 1- actualizar encargado con OID_RP null', NULL, 2, 2,false);
-pruebas_encargados.actualizar('Prueba 2- actualizar encargado', OID_RP2, 3,2,true);
-pruebas_encargados.eliminar('Prueba 1- eliminar encargado', OID_RP, true);
+pruebas_encargados.insertar('Prueba 82- inertar encargado', 4, 3, true);
+pruebas_encargados.insertar('Prueba 83- insertar encargado con OID_Proj null',NULL, 2, false);
+pruebas_encargados.insertar('Prueba 84- insertar encargado con OID_Coord null', 2, NULL, false);
+pruebas_encargados.actualizar('Prueba 85- actualizar encargado con OID_RP null', NULL, 2, 2,false);
+pruebas_encargados.actualizar('Prueba 86- actualizar encargado', OID_RP2, 3,2,true);
+pruebas_encargados.eliminar('Prueba 87- eliminar encargado', OID_RP, true);
 END;
 /    
 --PRUEBAS_ACTIVIDADES
@@ -2135,24 +2147,24 @@ DECLARE
 OID_Act INTEGER;
 OID_Act2 INTEGER;
 BEGIN
-pruebas_actividades.insertar('Prueba 1- insertar actividad', 3, 'Esquí sobre hielo', 'felicidad, diversión y compañía', '22/12/2018', '22/12/2018', '70', '70', 'deportiva', '700', '5', true);
+pruebas_actividades.insertar('Prueba 88- insertar actividad', 3, 'Esquí sobre hielo', 'felicidad, diversión y compañía', '22/12/2018', '22/12/2018', '70', '70', 'deportiva', '700', '5', true);
 OID_Act:=SEC_ACT.CURRVAL;
-pruebas_actividades.insertar('Prueba 2- insertar actividad', 2, 'Ruta Senderista Cascadas del Purgatorio','Conocer historia y nuevos paisajes', '08/01/2017', '08/01/2017', '20', '15', 'deportiva', '360', '8', true);
+pruebas_actividades.insertar('Prueba 89- insertar actividad', 2, 'Ruta Senderista Cascadas del Purgatorio','Conocer historia y nuevos paisajes', '08/01/2017', '08/01/2017', '20', '15', 'deportiva', '360', '8', true);
 OID_Act2:=Sec_ACT.CURRVAL;
-pruebas_actividades.insertar('Prueba 3- insertar actividad', 4,'Curso de Natación avanzado','Mejora en las hablilidades físicas','01/02/2019','01/06/2019','10', '10', 'deportiva', '500', '0',true);
-pruebas_actividades.insertar('Prueba 4- insertar actividad con nombre null', 3, NULL, 'Divertirse, aprender y hacer nuevos amigos','22/12/2018', '22/12/2018', '30', '30', 'deportiva', '200', '4', false );
-pruebas_actividades.insertar('Prueba 5- insertar actividad con objetivo null', 3, 'Esquí sobre hielo', NULL, '22/12/2018', '22/12/2018', '70', '70', 'deportiva', '400', '5', false);
-pruebas_actividades.insertar('Prueba 6- insertar actividad con fechaInicio null', 3, 'Esquí sobre hielo', 'felicidad, diversión y compañía', NULL, '22/12/2018', '70', '70', 'deportiva', '400', '5', false);
-pruebas_actividades.insertar('Prueba 7- insertar actividad con fechaFin null', 3, 'Esquí sobre hielo', 'felicidad, diversión y compañía', '22/12/2018', NULL, '70', '70', 'deportiva', '400', '5', false);
-pruebas_actividades.insertar('Prueba 8- insertar actividad con OID_Proj null', NULL, 'Ruta Senderista Cascadas del Purgatorio','Conocer historia y nuevos paisajes', '08/01/2017','08/01/2017', '20', '15', 'deportiva', '160', '8', false);
-pruebas_actividades.insertar('Prueba 9- insertar actividad con numeroPlazas null',3, 'Esquí sobre hielo', 'felicidad, diversión y compañía', '22/12/2018', '22/12/2018', NULL, '70', 'deportiva', '400', '5', false);
-pruebas_actividades.insertar('Prueba 10- insertar actividad con VoluntariosRequeridos null',3, 'Esquí sobre hielo', 'felicidad, diversión y compañía', '22/12/2018', '22/12/2018', '70', NULL, 'deportiva', '400', '5', false);
-pruebas_actividades.insertar('Prueba 11- insertar actividad con tipo null',2, 'Ruta Senderista Cascadas del Purgatorio','Conocer historia y nuevos paisajes', '08/01/2017', '08/01/2017', '20', '15', NULL, '160', '8', false);
-pruebas_actividades.insertar('Prueba 12- insertar actividad con costeTotal null',2, 'Ruta Senderista Cascadas del Purgatorio','Conocer historia y nuevos paisajes', '08/01/2017', '08/01/2017', '20', '15', 'deportiva', NULL, '8', false);
-pruebas_actividades.insertar('Prueba 13- insertar actividad con costeIscripcion null', 2, 'Ruta Senderista Cascadas del Purgatorio','Conocer historia y nuevos paisajes', '08/01/2017', '08/01/2017', '20', '15', 'deportiva', '160', NULL, false);
-pruebas_actividades.actualizar('Prueba 1- actualizar actividad', OID_Act2, 2, 'Ruta Senderista Cascadas del Purgatorio','Conocer historia y nuevos paisajes', '05/05/2017', '05/05/2017', '20', '15', 'deportiva', '360', '8', true);
-pruebas_actividades.actualizar('Prueba 2- actualizar actividad con OID null', NULL, 3, 'Mercadillo de Navidad', 'Dar y recibir amor, felicidad y compañía', '22/12/2018', '22/12/2018', '70', '70', 'social', '600', '5', false);
-pruebas_actividades.eliminar('Prueba 1- eliminar actividad', OID_Act, true);
+pruebas_actividades.insertar('Prueba 90- insertar actividad', 4,'Curso de Natación avanzado','Mejora en las hablilidades físicas','01/02/2019','01/06/2019','10', '10', 'deportiva', '500', '0',true);
+pruebas_actividades.insertar('Prueba 91- insertar actividad con nombre null', 3, NULL, 'Divertirse, aprender y hacer nuevos amigos','22/12/2018', '22/12/2018', '30', '30', 'deportiva', '200', '4', false );
+pruebas_actividades.insertar('Prueba 92- insertar actividad con objetivo null', 3, 'Esquí sobre hielo', NULL, '22/12/2018', '22/12/2018', '70', '70', 'deportiva', '400', '5', false);
+pruebas_actividades.insertar('Prueba 93- insertar actividad con fechaInicio null', 3, 'Esquí sobre hielo', 'felicidad, diversión y compañía', NULL, '22/12/2018', '70', '70', 'deportiva', '400', '5', false);
+pruebas_actividades.insertar('Prueba 94- insertar actividad con fechaFin null', 3, 'Esquí sobre hielo', 'felicidad, diversión y compañía', '22/12/2018', NULL, '70', '70', 'deportiva', '400', '5', false);
+pruebas_actividades.insertar('Prueba 95- insertar actividad con OID_Proj null', NULL, 'Ruta Senderista Cascadas del Purgatorio','Conocer historia y nuevos paisajes', '08/01/2017','08/01/2017', '20', '15', 'deportiva', '160', '8', false);
+pruebas_actividades.insertar('Prueba 96- insertar actividad con numeroPlazas null',3, 'Esquí sobre hielo', 'felicidad, diversión y compañía', '22/12/2018', '22/12/2018', NULL, '70', 'deportiva', '400', '5', false);
+pruebas_actividades.insertar('Prueba 97- insertar actividad con VoluntariosRequeridos null',3, 'Esquí sobre hielo', 'felicidad, diversión y compañía', '22/12/2018', '22/12/2018', '70', NULL, 'deportiva', '400', '5', false);
+pruebas_actividades.insertar('Prueba 98- insertar actividad con tipo null',2, 'Ruta Senderista Cascadas del Purgatorio','Conocer historia y nuevos paisajes', '08/01/2017', '08/01/2017', '20', '15', NULL, '160', '8', false);
+pruebas_actividades.insertar('Prueba 99- insertar actividad con costeTotal null',2, 'Ruta Senderista Cascadas del Purgatorio','Conocer historia y nuevos paisajes', '08/01/2017', '08/01/2017', '20', '15', 'deportiva', NULL, '8', false);
+pruebas_actividades.insertar('Prueba 100- insertar actividad con costeIscripcion null', 2, 'Ruta Senderista Cascadas del Purgatorio','Conocer historia y nuevos paisajes', '08/01/2017', '08/01/2017', '20', '15', 'deportiva', '160', NULL, false);
+pruebas_actividades.actualizar('Prueba 101- actualizar actividad', OID_Act2, 2, 'Ruta Senderista Cascadas del Purgatorio','Conocer historia y nuevos paisajes', '05/05/2017', '05/05/2017', '20', '15', 'deportiva', '360', '8', true);
+pruebas_actividades.actualizar('Prueba 102- actualizar actividad con OID null', NULL, 3, 'Mercadillo de Navidad', 'Dar y recibir amor, felicidad y compañía', '22/12/2018', '22/12/2018', '70', '70', 'social', '600', '5', false);
+pruebas_actividades.eliminar('Prueba 103- eliminar actividad', OID_Act, true);
 END;
 /
 --PRUEBAS_ESTAINTERESADOEN
@@ -2161,16 +2173,16 @@ OID_Int INTEGER;
 OID_Int2 INTEGER;
 BEGIN
 pruebas_estaInteresadoEn.inicializar;
-pruebas_estaInteresadoEn.insertar('Prueba 1- insertar el interés de participante', 2, NULL, 2, 1,true);
+pruebas_estaInteresadoEn.insertar('Prueba 104- insertar el interés de participante', 2, NULL, 2, 1,true);
 OID_Int:=SEC_INT.CURRVAL;
-pruebas_estaInteresadoEn.insertar('Prueba 2- insertar el interés de voluntario',NULL, 1, 2, 1,true);
+pruebas_estaInteresadoEn.insertar('Prueba 105- insertar el interés de voluntario',NULL, 1, 2, 1,true);
 OID_Int2:=SEC_INT.CURRVAL;
-pruebas_estaInteresadoEn.insertar('Prueba 3- insertar el interés de participante', 3, NULL, 3, 1, true );
-pruebas_estaInteresadoEn.insertar('Prueba 3- insertar el interés con OID_Act null', 2,NULL, NULL, 1, false);
-pruebas_estaInteresadoEn.insertar('Prueba 4- insertar el interés con estado null',NULL, 1, 2, NULL,false);
-pruebas_estaInteresadoEn.actualizar('Prueba 1- actualizar el interés',OID_Int, 2,NULL, 2, 0,true);
-pruebas_estaInteresadoEn.actualizar('Prueba 2- actualizar el interés con OID null', NULL, 2,NULL, 2, 0,false);
-pruebas_estaInteresadoEn.eliminar('Prueba 1- eliminar interés', OID_Int2, true); 
+pruebas_estaInteresadoEn.insertar('Prueba 106- insertar el interés de participante', 3, NULL, 3, 1, true );
+pruebas_estaInteresadoEn.insertar('Prueba 107- insertar el interés con OID_Act null', 2,NULL, NULL, 1, false);
+pruebas_estaInteresadoEn.insertar('Prueba 108- insertar el interés con estado null',NULL, 1, 2, NULL,false);
+pruebas_estaInteresadoEn.actualizar('Prueba 109- actualizar el interés',OID_Int, 2,NULL, 2, 0,true);
+pruebas_estaInteresadoEn.actualizar('Prueba 110- actualizar el interés con OID null', NULL, 2,NULL, 2, 0,false);
+pruebas_estaInteresadoEn.eliminar('Prueba 111- eliminar interés', OID_Int2, true); 
 END;
 /
 --PRUEBAS_COLABORACIONES
@@ -2179,16 +2191,16 @@ OID_Colab INTEGER;
 OID_Colab2 INTEGER;
 BEGIN
 pruebas_colaboraciones.inicializar;
-pruebas_colaboraciones.insertar('Prueba 1- insertar colaboración de voluntario', 1, 2, true);
+pruebas_colaboraciones.insertar('Prueba 112- insertar colaboración de voluntario', 1, 2, true);
 OID_Colab:=SEC_COLAB.CURRVAL;
-pruebas_colaboraciones.insertar('Prueba 2- insertar colaboración de voluntario', 1, 2, true);
+pruebas_colaboraciones.insertar('Prueba 113- insertar colaboración de voluntario', 1, 2, true);
 OID_Colab2:=SEC_COLAB.CURRVAL;
-pruebas_colaboraciones.insertar('Prueba 3- insertar colaboración de voluntario', 1, 3, true);
-pruebas_colaboraciones.insertar('Prueba 4- insertar colaboración de voluntario con OID_Vol null', NULL, 4, false);
-pruebas_colaboraciones.insertar('Prueba 5- insertar colaboración de voluntario con OID_Act null', 1, NULL, false);
-pruebas_colaboraciones.actualizar('Prueba 1- actualizar colaboración de voluntario con OID_Colab null', NULL, 3, 2, false );
-pruebas_colaboraciones.actualizar('Prueba 2- actualizar colaboración de voluntario', OID_Colab2, 3, 2, true );
-pruebas_colaboraciones.eliminar('Prueba 1- eliminar colaboración de voluntario', OID_Colab, true);
+pruebas_colaboraciones.insertar('Prueba 114- insertar colaboración de voluntario', 1, 3, true);
+pruebas_colaboraciones.insertar('Prueba 115- insertar colaboración de voluntario con OID_Vol null', NULL, 4, false);
+pruebas_colaboraciones.insertar('Prueba 116- insertar colaboración de voluntario con OID_Act null', 1, NULL, false);
+pruebas_colaboraciones.actualizar('Prueba 117- actualizar colaboración de voluntario con OID_Colab null', NULL, 3, 2, false );
+pruebas_colaboraciones.actualizar('Prueba 118- actualizar colaboración de voluntario', OID_Colab2, 3, 2, true );
+pruebas_colaboraciones.eliminar('Prueba 119- eliminar colaboración de voluntario', OID_Colab, true);
 END;
 /
 --PRUEBAS_RECIBOS
@@ -2197,19 +2209,19 @@ OID_Rec INTEGER;
 OID_Rec2 INTEGER;
 BEGIN
 pruebas_recibos.inicializar;
-pruebas_recibos.insertar('Prueba 1- insertar recibo de una actividad', 2, 2,'01/02/2017','20/04/2017', 5, 'anulado', true);
+pruebas_recibos.insertar('Prueba 120- insertar recibo de una actividad', 2, 2,'01/02/2017','20/04/2017', 5, 'anulado', true);
 OID_Rec:=SEC_REC.CURRVAL;
-pruebas_recibos.insertar('Prueba 2- insertar recibo de una actividad', 2, 3,'01/02/2017','20/04/2017', '8', 'pagado', true);
+pruebas_recibos.insertar('Prueba 121- insertar recibo de una actividad', 2, 3,'01/02/2017','20/04/2017', '8', 'pagado', true);
 OID_Rec2:=SEC_REC.CURRVAL;
-pruebas_recibos.insertar('Prueba 3- insertar recibo de una actividad', 3, 2, '01/01/2019', '31/01/2019', '0','pagado', true);
-pruebas_recibos.insertar('Prueba 4- insertar recibo de una actividad', 3, 3, '01/01/2019', '31/01/2019', '0','pagado', true);
-pruebas_recibos.insertar('Prueba 5- insertar recibo de una actividad con fechaEmision null',2, 2, NULL,'20/04/2017', '8', 'pagado',false);
-pruebas_recibos.insertar('Prueba 6- insertar recibo de una actividad con fechaVencimiento null', 2, 2,'01/02/2017',NULL, '8', 'pagado',false);
-pruebas_recibos.insertar('Prueba 7- insertar recibo de una actividad con importe null', 2, 2,'01/02/2017','01/02/2017', NULL, 'pagado',false);
-pruebas_recibos.insertar('Prueba 8- insertar recibo de una actividad con estado null', 2, 2,'01/02/2017','01/02/2017', '8', NULL,false);
-pruebas_recibos.actualizar('Prueba 1- actualizar recibo de una actividad',OID_Rec,2, 3,'01/02/2017','20/04/2017', '8', 'anulado', true);
-pruebas_recibos.actualizar('Prueba 2- actualizar recibo de una actividad con OID null',NULL, 2, 2,'01/02/2017','20/04/2017', '8', 'pagado', false);
-pruebas_recibos.eliminar('Prueba 1- eliminar recibo de una actividad', OID_Rec, true);
+pruebas_recibos.insertar('Prueba 122- insertar recibo de una actividad', 3, 2, '01/01/2019', '31/01/2019', '0','pagado', true);
+pruebas_recibos.insertar('Prueba 123- insertar recibo de una actividad', 3, 3, '01/01/2019', '31/01/2019', '0','pagado', true);
+pruebas_recibos.insertar('Prueba 124- insertar recibo de una actividad con fechaEmision null',2, 2, NULL,'20/04/2017', '8', 'pagado',false);
+pruebas_recibos.insertar('Prueba 125- insertar recibo de una actividad con fechaVencimiento null', 2, 2,'01/02/2017',NULL, '8', 'pagado',false);
+pruebas_recibos.insertar('Prueba 126- insertar recibo de una actividad con importe null', 2, 2,'01/02/2017','01/02/2017', NULL, 'pagado',false);
+pruebas_recibos.insertar('Prueba 127- insertar recibo de una actividad con estado null', 2, 2,'01/02/2017','01/02/2017', '8', NULL,false);
+pruebas_recibos.actualizar('Prueba 128- actualizar recibo de una actividad',OID_Rec,2, 3,'01/02/2017','20/04/2017', '8', 'anulado', true);
+pruebas_recibos.actualizar('Prueba 129- actualizar recibo de una actividad con OID null',NULL, 2, 2,'01/02/2017','20/04/2017', '8', 'pagado', false);
+pruebas_recibos.eliminar('Prueba 130- eliminar recibo de una actividad', OID_Rec, true);
 END;
 /
 --PRUEBAS_INSCRIPCIONES
@@ -2218,33 +2230,33 @@ OID_Ins INTEGER;
 OID_Ins2 INTEGER;
 BEGIN
 pruebas_inscripciones.inicializar;
-pruebas_inscripciones.insertar('Prueba 1- insertar inscripción de participante', 2, 2, 3, true);
+pruebas_inscripciones.insertar('Prueba 131- insertar inscripción de participante', 2, 2, 3, true);
 OID_Ins:=SEC_INS.CURRVAL;
-pruebas_inscripciones.insertar('Prueba 2- insertar inscripción de participante', 2, 3, 3, true);
+pruebas_inscripciones.insertar('Prueba 132- insertar inscripción de participante', 2, 3, 3, true);
 OID_Ins2:=SEC_INS.CURRVAL;
-pruebas_inscripciones.insertar('Prueba 3- insertar inscripción de participante', 3, 2, 2, true);
-pruebas_inscripciones.insertar('Prueba 4- insertar inscripción de participante con OID_Part null', NULL, 2, 2,false);
-pruebas_inscripciones.insertar('Prueba 5- insertar inscripción de participante con OID_Act null', 3, NULL, 2,false);
-pruebas_inscripciones.actualizar('Prueba 1- actualizar inscripción de participante con OID_Ins null',NULL, 2, 3, 3, false);
-pruebas_inscripciones.actualizar('Prueba 2- actualizar inscripción de participante',OID_Ins2, 3, 3, 4,true);
-pruebas_inscripciones.eliminar('Prueba 1-eliminar inscripción de participante', OID_Ins, true);
+pruebas_inscripciones.insertar('Prueba 133- insertar inscripción de participante', 3, 2, 2, true);
+pruebas_inscripciones.insertar('Prueba 134- insertar inscripción de participante con OID_Part null', NULL, 2, 2,false);
+pruebas_inscripciones.insertar('Prueba 135- insertar inscripción de participante con OID_Act null', 3, NULL, 2,false);
+pruebas_inscripciones.actualizar('Prueba 136- actualizar inscripción de participante con OID_Ins null',NULL, 2, 3, 3, false);
+pruebas_inscripciones.actualizar('Prueba 137- actualizar inscripción de participante',OID_Ins2, 3, 3, 4,true);
+pruebas_inscripciones.eliminar('Prueba 138-eliminar inscripción de participante', OID_Ins, true);
 END;
 /
 --PRUEBAS_INSTITUCIONES
 BEGIN
 pruebas_instituciones.inicializar;
-pruebas_instituciones.insertar('Prueba 1- insertar institución correctamente','A58223209', 'Banco Santander', '678943212', 'C/ Gran Vía, 22','Madrid', 'Madrid', '28001', 'contacto@santander.com', 1, 'oro', true);
-pruebas_instituciones.insertar('Prueba 2- insertar institución correctamente','A87674532', 'El Corte Inglés, S.A.', '654123987', 'C/ Preciados, 1', 'Madrid', 'Madrid', '28001', 'contacto@elcorteingles.com', 0, NULL, true);
-pruebas_instituciones.insertar('Prueba 3- insertar institución correctamente','A33219876', 'BBVA', '672129086', 'C/ Colón, 2', 'Madrid', 'Madrid', '28001', 'contacto@bbva.com', 1, 'plata', true);
-pruebas_instituciones.insertar('Prueba 4- insertar institución correctamente','H45681524', 'Deportiteka S.L.', '651675440', 'C/ Milagros, 74', 'Madrid', 'Madrid', '28005', 'contacto@deportiteka.com', 0, NULL, true);
-pruebas_instituciones.insertar('Prueba 5- insertar institución con cif menor a 9 caracteres ', 'H4568152', 'Deportiteka S.L.', '651675440', 'C/ Milagros, 74', 'Madrid', 'Madrid', '28005', 'contacto@deportiteka.com', 1, 'plata', false);
-pruebas_instituciones.insertar('Prueba 6- insertar institución con cif null',null, 'Materiales Domínguez S.L.', '639553337', 'C/ Danubio, 12, 4ºB', 'Madrid', 'Madrid', '28002', 'm_dominguez@gmail.com',1,'bronce', false);
-pruebas_instituciones.insertar('Prueba 7- insertar institución con nombre null', 'B78998456', NULL, '677213157', 'C/ Vuelos Altos, 14', 'Madrid', 'Madrid', '28004', 'mail@amisa.es' ,0,NULL, false);
-pruebas_instituciones.insertar('Prueba 8- insertar institución con telefono null','A33219876', 'BBVA', NULL, 'C/ Colón, 2', 'Madrid', 'Madrid', '28001', 'contacto@bbva.com', 1, 'plata',false);
-pruebas_instituciones.insertar('Prueba 9- insertar institución con esPatrocinador null','B78998456', 'Fundación AMISA', '677213157', 'C/ Vuelos Altos, 14', 'Madrid', 'Madrid', '28001', 'mail@amisa.es', NULL, NULL, false);
-pruebas_instituciones.actualizar('Prueba 1- actualizar institución con cif menor a 9 caracteres', 'A5822320', 'Banco Santander', '678943212', 'C/ Gran Vía, 22', 'Madrid', 'Madrid', '28001', 'contacto@santander.com', 1, 'oro', false);
-pruebas_instituciones.actualizar('Prueba 2- actualizar institución con nueva dirección', 'A87674532', 'El Corte Inglés, S.A.', '654123987', 'C/ Dr. Gómez Ulla, 2', 'Madrid', 'Madrid', '28001', 'contacto@elcorteingles.com' , 1,'oro', true);
-pruebas_instituciones.eliminar('Prueba 1- eliminar institución', 'A58223209', true);
+pruebas_instituciones.insertar('Prueba 139- insertar institución correctamente','A58223209', 'Banco Santander', '678943212', 'C/ Gran Vía, 22','Madrid', 'Madrid', '28001', 'contacto@santander.com', 1, 'oro', true);
+pruebas_instituciones.insertar('Prueba 140- insertar institución correctamente','A87674532', 'El Corte Inglés, S.A.', '654123987', 'C/ Preciados, 1', 'Madrid', 'Madrid', '28001', 'contacto@elcorteingles.com', 0, NULL, true);
+pruebas_instituciones.insertar('Prueba 141- insertar institución correctamente','A33219876', 'BBVA', '672129086', 'C/ Colón, 2', 'Madrid', 'Madrid', '28001', 'contacto@bbva.com', 1, 'plata', true);
+pruebas_instituciones.insertar('Prueba 142- insertar institución correctamente','H45681524', 'Deportiteka S.L.', '651675440', 'C/ Milagros, 74', 'Madrid', 'Madrid', '28005', 'contacto@deportiteka.com', 0, NULL, true);
+pruebas_instituciones.insertar('Prueba 143- insertar institución con cif menor a 9 caracteres ', 'H4568152', 'Deportiteka S.L.', '651675440', 'C/ Milagros, 74', 'Madrid', 'Madrid', '28005', 'contacto@deportiteka.com', 1, 'plata', false);
+pruebas_instituciones.insertar('Prueba 144- insertar institución con cif null',null, 'Materiales Domínguez S.L.', '639553337', 'C/ Danubio, 12, 4ºB', 'Madrid', 'Madrid', '28002', 'm_dominguez@gmail.com',1,'bronce', false);
+pruebas_instituciones.insertar('Prueba 145- insertar institución con nombre null', 'B78998456', NULL, '677213157', 'C/ Vuelos Altos, 14', 'Madrid', 'Madrid', '28004', 'mail@amisa.es' ,0,NULL, false);
+pruebas_instituciones.insertar('Prueba 146- insertar institución con telefono null','A33219876', 'BBVA', NULL, 'C/ Colón, 2', 'Madrid', 'Madrid', '28001', 'contacto@bbva.com', 1, 'plata',false);
+pruebas_instituciones.insertar('Prueba 147- insertar institución con esPatrocinador null','B78998456', 'Fundación AMISA', '677213157', 'C/ Vuelos Altos, 14', 'Madrid', 'Madrid', '28001', 'mail@amisa.es', NULL, NULL, false);
+pruebas_instituciones.actualizar('Prueba 148- actualizar institución con cif menor a 9 caracteres', 'A5822320', 'Banco Santander', '678943212', 'C/ Gran Vía, 22', 'Madrid', 'Madrid', '28001', 'contacto@santander.com', 1, 'oro', false);
+pruebas_instituciones.actualizar('Prueba 149- actualizar institución con nueva dirección', 'A87674532', 'El Corte Inglés, S.A.', '654123987', 'C/ Dr. Gómez Ulla, 2', 'Madrid', 'Madrid', '28001', 'contacto@elcorteingles.com' , 1,'oro', true);
+pruebas_instituciones.eliminar('Prueba 150- eliminar institución', 'A58223209', true);
 END;
 /
 --PRUEBAS_PATROCIONIOS
@@ -2253,16 +2265,16 @@ OID_Fin INTEGER;
 OID_Fin2 INTEGER;
 BEGIN
 pruebas_patrocinios.inicializar;
-pruebas_patrocinios.insertar('Prueba 1- insertar patrocinio','A87674532','500', 3, true);
+pruebas_patrocinios.insertar('Prueba 151- insertar patrocinio','A87674532','500', 3, true);
 OID_Fin:=SEC_FIN.CURRVAL;
-pruebas_patrocinios.insertar('Prueba 2- insertar patrocinio', 'A33219876','100', 2, true);
+pruebas_patrocinios.insertar('Prueba 152- insertar patrocinio', 'A33219876','100', 2, true);
 OID_Fin2:=SEC_FIN.Currval;
-pruebas_patrocinios.insertar('Prueba 3- insertar patrocinio con cif null', NULL,'200', 2, false);
-pruebas_patrocinios.insertar('Prueba 4- insertar patrocinio con OID_Act null', 'A33219876','200',NULL, false);
-pruebas_patrocinios.insertar('Prueba 5- insertar patrocinio con cantidad null', 'A33219876',NULL,2, false);
-pruebas_patrocinios.actualizar('Prueba 1- actualizar patrocinio', OID_Fin2, 'A33219876', '200', 2,  true);
-pruebas_patrocinios.actualizar('Prueba 2- actualizar patrocinio con OID null',NULL, 'A87674532','400', 3,false);
-pruebas_patrocinios.eliminar('Prueba 1- eliminar patrocinio', OID_Fin, true);
+pruebas_patrocinios.insertar('Prueba 153- insertar patrocinio con cif null', NULL,'200', 2, false);
+pruebas_patrocinios.insertar('Prueba 154- insertar patrocinio con OID_Act null', 'A33219876','200',NULL, false);
+pruebas_patrocinios.insertar('Prueba 155- insertar patrocinio con cantidad null', 'A33219876',NULL,2, false);
+pruebas_patrocinios.actualizar('Prueba 156- actualizar patrocinio', OID_Fin2, 'A33219876', '200', 2,  true);
+pruebas_patrocinios.actualizar('Prueba 157- actualizar patrocinio con OID null',NULL, 'A87674532','400', 3,false);
+pruebas_patrocinios.eliminar('Prueba 158- eliminar patrocinio', OID_Fin, true);
 END;
 /
 --PRUEBAS_TIPOSDONACIONES
@@ -2271,18 +2283,18 @@ OID_TDon INTEGER;
 OID_TDon2 INTEGER;
 BEGIN
 pruebas_tipodonaciones.inicializar;
-pruebas_tipodonaciones.insertar('Prueba 1- insertar tipodonaciones correctamente', 'Equipaciones de Esquí', 'material',true);
+pruebas_tipodonaciones.insertar('Prueba 159- insertar tipodonaciones correctamente', 'Equipaciones de Esquí', 'material',true);
 OID_TDon:=SEC_TDON.CURRVAL;
-pruebas_tipodonaciones.insertar('Prueba 2- insertar tipodonaciones correctamente', 'Sillas de ruedas Baloncesto', 'material', true);
-pruebas_tipodonaciones.insertar('Prueba 3- insertar tipodonaciones correctamente', 'Equipaciones de Golf', 'material', true);
+pruebas_tipodonaciones.insertar('Prueba 160- insertar tipodonaciones correctamente', 'Sillas de ruedas Baloncesto', 'material', true);
+pruebas_tipodonaciones.insertar('Prueba 161- insertar tipodonaciones correctamente', 'Equipaciones de Golf', 'material', true);
 OID_TDon2:=SEC_TDON.CURRVAL;
-pruebas_tipodonaciones.insertar('Prueba 4- insertar tipodonaciones con numbre null', NULL, 'Euro', false);
-pruebas_tipodonaciones.insertar('Prueba 5- insertar tipodonaciones con tipoUnidad null', 'Bicicletas adaptadas', NULL, false);
-pruebas_tipodonaciones.actualizar('Prueba 1- actualizar tipodonacion correctamente', OID_TDon2, 'Conjunto de senderismo invernal', 'equipaciones', true );
-pruebas_tipodonaciones.actualizar('Prueba 2- actualizar tipodonacion con oid null', NULL, 'Equipaciones de Golf', 'material', false);
-pruebas_tipodonaciones.actualizar('Prueba 3- actualizar tipodonacion con nombre null', OID_TDon, NULL, 'material', false);
-pruebas_tipodonaciones.actualizar('Prueba 4- actualizar tipodonacion con tipoUnidad null', OID_TDon, 'Equipaje deportivo adaptado', NULL, false);
-pruebas_tipodonaciones.eliminar('Prueba 1- eliminar tipodonacion ', OID_TDon, true);
+pruebas_tipodonaciones.insertar('Prueba 162- insertar tipodonaciones con numbre null', NULL, 'Euro', false);
+pruebas_tipodonaciones.insertar('Prueba 163- insertar tipodonaciones con tipoUnidad null', 'Bicicletas adaptadas', NULL, false);
+pruebas_tipodonaciones.actualizar('Prueba 164- actualizar tipodonacion correctamente', OID_TDon2, 'Conjunto de senderismo invernal', 'equipaciones', true );
+pruebas_tipodonaciones.actualizar('Prueba 165- actualizar tipodonacion con oid null', NULL, 'Equipaciones de Golf', 'material', false);
+pruebas_tipodonaciones.actualizar('Prueba 166- actualizar tipodonacion con nombre null', OID_TDon, NULL, 'material', false);
+pruebas_tipodonaciones.actualizar('Prueba 167- actualizar tipodonacion con tipoUnidad null', OID_TDon, 'Equipaje deportivo adaptado', NULL, false);
+pruebas_tipodonaciones.eliminar('Prueba 168- eliminar tipodonacion ', OID_TDon, true);
 END;
 /
 --PRUEBAS_DONACIONES
@@ -2291,16 +2303,16 @@ OID_Don INTEGER;
 OID_Don2 INTEGER;
 BEGIN
 pruebas_donaciones.inicializar;
-pruebas_donaciones.insertar('Prueba 1- insertar donación de persona', NULL, '13227182M', 2, '12','1200','10/12/2018', true);
+pruebas_donaciones.insertar('Prueba 169- insertar donación de persona', NULL, '13227182M', 2, '12','1200','10/12/2018', true);
 OID_Don:=SEC_DON.CURRVAL;
-pruebas_donaciones.insertar('Prueba 2- insertar donación de institución', 'H45681524', NULL, 3, '4', '4500','15/11/2018', true);
+pruebas_donaciones.insertar('Prueba 170- insertar donación de institución', 'H45681524', NULL, 3, '4', '4500','15/11/2018', true);
 OID_Don2:=SEC_DON.CURRVAL;
-pruebas_donaciones.insertar('Prueba 3- insertar donación con cantidad null', NULL, '13227182M', 2, NULL,'1200','07/10/2018', false);
-pruebas_donaciones.insertar('Prueba 4- insertar donación con valorUnitario null', 'H45681524', NULL, 3, '4', NULL,'02/05/2017', false);
-pruebas_donaciones.insertar('Prueba 5- insertar donación con OID_TDon null', 'H45681524', NULL, NULL, '4', '4500','08/04/2017', false);
-pruebas_donaciones.actualizar('Prueba 1- actualizar donación de persona', OID_Don,NULL, '13227182M', 2, '10','900','26/05/2017', true);
-pruebas_donaciones.actualizar('Prueba 2- actualizar donación con OID null',NULL, NULL, '13227182M', 2, '18','2500','21/12/2018', false);
-pruebas_donaciones.eliminar('Prueba 1- eliminar donación', OID_Don2, true);
+pruebas_donaciones.insertar('Prueba 171- insertar donación con cantidad null', NULL, '13227182M', 2, NULL,'1200','07/10/2018', false);
+pruebas_donaciones.insertar('Prueba 172- insertar donación con valorUnitario null', 'H45681524', NULL, 3, '4', NULL,'02/05/2017', false);
+pruebas_donaciones.insertar('Prueba 173- insertar donación con OID_TDon null', 'H45681524', NULL, NULL, '4', '4500','08/04/2017', false);
+pruebas_donaciones.actualizar('Prueba 174- actualizar donación de persona', OID_Don,NULL, '13227182M', 2, '10','900','26/05/2017', true);
+pruebas_donaciones.actualizar('Prueba 175- actualizar donación con OID null',NULL, NULL, '13227182M', 2, '18','2500','21/12/2018', false);
+pruebas_donaciones.eliminar('Prueba 176- eliminar donación', OID_Don2, true);
 END;
 /
 --PRUEBAS_MENSAJES
@@ -2309,19 +2321,19 @@ OID_M INTEGER;
 OID_M2 INTEGER;
 BEGIN
 pruebas_mensajes.inicializar;
-pruebas_mensajes.insertar('Prueba 1- insertar mensaje', 3, 'newsletter', '26/12/2018', '¡Llega el Mercadillo de Navidad!', 'Código HTML de la newsletter', true);
+pruebas_mensajes.insertar('Prueba 177- insertar mensaje', 3, 'newsletter', '26/12/2018', '¡Llega el Mercadillo de Navidad!', 'Código HTML de la newsletter', true);
 OID_M:=SEC_M.CURRVAL;
-pruebas_mensajes.insertar('Prueba 2- insertar mensaje', 2, 'email', '12/05/2018', 'Recordatorio de las Actividades próximas', '¿Te gustaría participar en alguna de estás actividades?...', true);
+pruebas_mensajes.insertar('Prueba 178- insertar mensaje', 2, 'email', '12/05/2018', 'Recordatorio de las Actividades próximas', '¿Te gustaría participar en alguna de estás actividades?...', true);
 OID_M2:=SEC_M.CURRVAL;
-pruebas_mensajes.insertar('Prueba 4- insertar mensaje', 2, 'informe', '13/01/2017', 'Recuerdos del 2016', 'Comenzamos el año recordando las actividades que se realizaron en 2016...', true);
-pruebas_mensajes.insertar('Prueba 5- insertar mensaje con OID_Coord null', NULL, 'informe', '13/01/2017', 'Recuerdos del 2016', 'Comenzamos el año recordando las actividades que se realizaron en 2016...', false);
-pruebas_mensajes.insertar('Prueba 6- insertar mensaje con tipo null', 2, NULL, '13/01/2018', 'Recuerdos del 2017', 'Comenzamos el año recordando las actividades que se realizaron en 2017...', false);
-pruebas_mensajes.insertar('Prueba 7- insertar mensaje con fechaEnvio null', 3, 'informe', NULL, 'Recuerdos del 2016', 'Comenzamos el año recordando las actividades que se realizaron en 2016...', false);
-pruebas_mensajes.insertar('Prueba 8- insertar mensaje con asunto null', 2, 'informe', '13/01/2017', NULL, 'Comenzamos el año recordando las actividades que se realizaron en 2016...', false);
-pruebas_mensajes.insertar('Prueba 9- insertar mensaje con contenido null', 3, 'informe', '13/01/2017', 'Recuerdos del 2016', NULL, false);
-pruebas_mensajes.actualizar('Prueba 1- actualizar mensaje con OID_M null', NULL, 3, 'newsletter', '26/12/2018', '¡Llega el Mercadillo de Navidad!', 'Código HTML de la newsletter', false);
-pruebas_mensajes.actualizar('Prueba 2- actualizar mensaje', OID_M, 3, 'newsletter', '26/12/2017', '¡Llega el Mercadillo de Navidad!', 'Código HTML de la newsletter', true);
-pruebas_mensajes.eliminar('Prueba 1- eliminar mensaje', OID_M2, true);
+pruebas_mensajes.insertar('Prueba 179- insertar mensaje', 2, 'informe', '13/01/2017', 'Recuerdos del 2016', 'Comenzamos el año recordando las actividades que se realizaron en 2016...', true);
+pruebas_mensajes.insertar('Prueba 180- insertar mensaje con OID_Coord null', NULL, 'informe', '13/01/2017', 'Recuerdos del 2016', 'Comenzamos el año recordando las actividades que se realizaron en 2016...', false);
+pruebas_mensajes.insertar('Prueba 181- insertar mensaje con tipo null', 2, NULL, '13/01/2018', 'Recuerdos del 2017', 'Comenzamos el año recordando las actividades que se realizaron en 2017...', false);
+pruebas_mensajes.insertar('Prueba 182- insertar mensaje con fechaEnvio null', 3, 'informe', NULL, 'Recuerdos del 2016', 'Comenzamos el año recordando las actividades que se realizaron en 2016...', false);
+pruebas_mensajes.insertar('Prueba 183- insertar mensaje con asunto null', 2, 'informe', '13/01/2017', NULL, 'Comenzamos el año recordando las actividades que se realizaron en 2016...', false);
+pruebas_mensajes.insertar('Prueba 184- insertar mensaje con contenido null', 3, 'informe', '13/01/2017', 'Recuerdos del 2016', NULL, false);
+pruebas_mensajes.actualizar('Prueba 185- actualizar mensaje con OID_M null', NULL, 3, 'newsletter', '26/12/2018', '¡Llega el Mercadillo de Navidad!', 'Código HTML de la newsletter', false);
+pruebas_mensajes.actualizar('Prueba 186- actualizar mensaje', OID_M, 3, 'newsletter', '26/12/2017', '¡Llega el Mercadillo de Navidad!', 'Código HTML de la newsletter', true);
+pruebas_mensajes.eliminar('Prueba 187- eliminar mensaje', OID_M2, true);
 END;
 /
 --PRUEBAS_ENVIOS
@@ -2330,14 +2342,14 @@ OID_Env INTEGER;
 OID_Env2 INTEGER;
 BEGIN
 pruebas_envios.inicializar;
-pruebas_envios.insertar('Prueba 1- insertar un envío', 1, '66641234M', NULL, true);
+pruebas_envios.insertar('Prueba 188- insertar un envío', 1, '66641234M', NULL, true);
 OID_Env:=SEC_ENV.CURRVAL;
-pruebas_envios.insertar('Prueba 2- insertar un envío', 1, NULL, 'A33219876', true);
+pruebas_envios.insertar('Prueba 189- insertar un envío', 1, NULL, 'A33219876', true);
 OID_Env2:=SEC_ENV.CURRVAL;
-pruebas_envios.insertar('Prueba 3- insertar un envío con OID_M null',NULL, NULL, 'A33219876', false);
-pruebas_envios.actualizar('Prueba 1- actualizar un envío con OID_Env null', NULL, 3, NULL, 'A33219876', false);
-pruebas_envios.actualizar('Prueba 2- actualizar un envío', OID_Env, 3, '66641234M', NULL, true);
-pruebas_envios.eliminar('Prueba 1- eliminar un envío', OID_Env2, true);
+pruebas_envios.insertar('Prueba 190- insertar un envío con OID_M null',NULL, NULL, 'A33219876', false);
+pruebas_envios.actualizar('Prueba 191- actualizar un envío con OID_Env null', NULL, 3, NULL, 'A33219876', false);
+pruebas_envios.actualizar('Prueba 192- actualizar un envío', OID_Env, 3, '66641234M', NULL, true);
+pruebas_envios.eliminar('Prueba 193- eliminar un envío', OID_Env2, true);
 END;
 /
 --PRUEBAS_PREGUNTAS
@@ -2346,16 +2358,16 @@ OID_Q INTEGER;
 OID_Q2 INTEGER;
 BEGIN
 pruebas_preguntas.inicializar;
-pruebas_preguntas.insertar('Prueba 1- insertar pregunta', 'numerica', 'Valore el progama deportivo del 1 al 10', true);
+pruebas_preguntas.insertar('Prueba 194- insertar pregunta', 'numerica', 'Valore el progama deportivo del 1 al 10', true);
 OID_Q:=SEC_Q.CURRVAL;
-pruebas_preguntas.insertar('Prueba 2- insertar pregunta', 'textual', '¿Qué parte de la actividad le ha gustado más?', true);
+pruebas_preguntas.insertar('Prueba 195- insertar pregunta', 'textual', '¿Qué parte de la actividad le ha gustado más?', true);
 OID_Q2:=SEC_Q.CURRVAL;
-pruebas_preguntas.insertar('Prueba 2- insertar pregunta', 'textual', 'Si tuviera la posibilidad, ¿Realizaría de nuevo la actividad?', true);
-pruebas_preguntas.insertar('Prueba 3- insertar pregunta con tipo null', NULL, '¿Qué has aprendido en el evento?', false );
-pruebas_preguntas.insertar('Prueba 4- insertar pregunta con enunciado null', 'opcional', NULL, false);
-pruebas_preguntas.actualizar('Prueba 1- actualizar pregunta con OID_Q null',NULL,'textual', '¿Qué parte de la actividad le ha gustado más?', false);
-pruebas_preguntas.actualizar('Prueba 2- actualizar pregunta',OID_Q2, 'textual', '¿Qué mejoraría de la actividad?', true);
-pruebas_preguntas.eliminar('Prueba 1- eliminar pregunta', OID_Q, true);
+pruebas_preguntas.insertar('Prueba 196- insertar pregunta', 'textual', 'Si tuviera la posibilidad, ¿Realizaría de nuevo la actividad?', true);
+pruebas_preguntas.insertar('Prueba 197- insertar pregunta con tipo null', NULL, '¿Qué has aprendido en el evento?', false );
+pruebas_preguntas.insertar('Prueba 198- insertar pregunta con enunciado null', 'opcional', NULL, false);
+pruebas_preguntas.actualizar('Prueba 199- actualizar pregunta con OID_Q null',NULL,'textual', '¿Qué parte de la actividad le ha gustado más?', false);
+pruebas_preguntas.actualizar('Prueba 200- actualizar pregunta',OID_Q2, 'textual', '¿Qué mejoraría de la actividad?', true);
+pruebas_preguntas.eliminar('Prueba 201- eliminar pregunta', OID_Q, true);
 END;
 /
 --PRUEBAS_CUESTIONARIOS
@@ -2364,15 +2376,15 @@ OID_Cues INTEGER;
 OID_Cues2 INTEGER;
 BEGIN
 pruebas_cuestionarios.inicializar;
-pruebas_cuestionarios.insertar('Prueba 1- insertar cuestionarios', 2,'06/05/2017', true);
+pruebas_cuestionarios.insertar('Prueba 202- insertar cuestionarios', 2,'06/05/2017', true);
 OID_Cues:=SEC_CUES.CURRVAL;
-pruebas_cuestionarios.insertar('Prueba 2- insertar cuestionarios', 3, '02/06/2019', true);
+pruebas_cuestionarios.insertar('Prueba 203- insertar cuestionarios', 3, '02/06/2019', true);
 OID_Cues2:=SEC_Cues.CURRVAL;
-pruebas_cuestionarios.insertar('Prueba 3- insertar cuestionarios con fecha null', 3, NULL, false);
-pruebas_cuestionarios.insertar('Prueba 4- insertar cuestionarios con OID_Act null', NULL, '02/06/2019', false);
-pruebas_cuestionarios.actualizar('Prueba 1- actualizar cuestionario con OID_Cues null', 3, NULL,'02/06/2019', false);
-pruebas_cuestionarios.actualizar('Prueba 2- actializar cuestionario', OID_Cues2, 3,'05/01/2019', true);
-pruebas_cuestionarios.eliminar('Prueba 1- eliminar cuestionario', OID_Cues, true);
+pruebas_cuestionarios.insertar('Prueba 204- insertar cuestionarios con fecha null', 3, NULL, false);
+pruebas_cuestionarios.insertar('Prueba 205- insertar cuestionarios con OID_Act null', NULL, '02/06/2019', false);
+pruebas_cuestionarios.actualizar('Prueba 206- actualizar cuestionario con OID_Cues null', 3, NULL,'02/06/2019', false);
+pruebas_cuestionarios.actualizar('Prueba 207- actializar cuestionario', OID_Cues2, 3,'05/01/2019', true);
+pruebas_cuestionarios.eliminar('Prueba 208- eliminar cuestionario', OID_Cues, true);
 END;
 /
 --PRUEBAS_FORMULARIOS
@@ -2381,15 +2393,15 @@ OID_Form INTEGER;
 OID_Form2 INTEGER;
 BEGIN
 pruebas_formularios.inicializar;
-pruebas_formularios.insertar('Prueba 1- insertar formulario',2 ,2, true);
+pruebas_formularios.insertar('Prueba 209- insertar formulario',2 ,2, true);
 OID_Form:=SEC_FORM.CURRVAL;
-pruebas_formularios.insertar('Prueba 2- insertar formulario',2, 3,true);
+pruebas_formularios.insertar('Prueba 210- insertar formulario',2, 3,true);
 OID_Form2:=SEC_FORM.CURRVAL;
-pruebas_formularios.insertar('Prueba 3- insertar formulario con OID_Cues null', NULL, 2, false);
-pruebas_formularios.insertar('Prueba 4- insertar formulario con OID_Q null', 2, NULL, false);
-pruebas_formularios.actualizar('Prueba 1- actualizar formulario con OID_Form null', NULL,2,2, false);
-pruebas_formularios.actualizar('Prueba 2- acualizar formulario', OID_Form, 2,3,true);
-pruebas_formularios.eliminar('Prueba 1- eliminar formulario', OID_Form2,true);
+pruebas_formularios.insertar('Prueba 211- insertar formulario con OID_Cues null', NULL, 2, false);
+pruebas_formularios.insertar('Prueba 212- insertar formulario con OID_Q null', 2, NULL, false);
+pruebas_formularios.actualizar('Prueba 213- actualizar formulario con OID_Form null', NULL,2,2, false);
+pruebas_formularios.actualizar('Prueba 214- acualizar formulario', OID_Form, 2,3,true);
+pruebas_formularios.eliminar('Prueba 215- eliminar formulario', OID_Form2,true);
 END;
 /
 --PRUEBAS_RESPUESTAS
@@ -2398,15 +2410,15 @@ OID_Ans INTEGER;
 OID_Ans2 INTEGER;
 BEGIN
 pruebas_respuestas.inicializar;
-pruebas_respuestas.insertar('Prueba 1- insertar respuesta', 1, 2, NULL, 'Sin ninguna duda volvería a realizarla', true);
+pruebas_respuestas.insertar('Prueba 216- insertar respuesta', 1, 2, NULL, 'Sin ninguna duda volvería a realizarla', true);
 OID_Ans:=SEC_ANS.CURRVAL;
-pruebas_respuestas.insertar('Prueba 2- insertar respuesta', 1, NULL, 1, 'No me ha gustado, me esperaba mucho más, no volvería a hacerla', true);
+pruebas_respuestas.insertar('Prueba 217- insertar respuesta', 1, NULL, 1, 'No me ha gustado, me esperaba mucho más, no volvería a hacerla', true);
 OID_Ans2:=SEC_ANS.CURRVAL;
-pruebas_respuestas.insertar('Prueba 3- insertar respuesta con OID_Form null', NULL, NULL, 3, 'Me ha parecido muy interesante y me encantaría repetirla con más amigos',false);
-pruebas_respuestas.insertar('Prueba 3- insertar respuesta con contenido null', 1, 3, NULL, NULL ,false);
-pruebas_respuestas.actualizar('Prueba 1- actualizar respuesta con OID_Ans null',NULL, 1, 2, NULL, 'Sin ninguna duda volvería a realizarla',false);
-pruebas_respuestas.actualizar('Prueba 1- actualizar respuesta',OID_Ans2,1, NULL, 3, 'No me ha gustado, me esperaba mucho más, no volvería a hacerla',true);
-pruebas_respuestas.eliminar('Prueba 1- eliminar respuesta', OID_Ans, true);
+pruebas_respuestas.insertar('Prueba 218- insertar respuesta con OID_Form null', NULL, NULL, 3, 'Me ha parecido muy interesante y me encantaría repetirla con más amigos',false);
+pruebas_respuestas.insertar('Prueba 219- insertar respuesta con contenido null', 1, 3, NULL, NULL ,false);
+pruebas_respuestas.actualizar('Prueba 220- actualizar respuesta con OID_Ans null',NULL, 1, 2, NULL, 'Sin ninguna duda volvería a realizarla',false);
+pruebas_respuestas.actualizar('Prueba 221- actualizar respuesta',OID_Ans2,1, NULL, 3, 'No me ha gustado, me esperaba mucho más, no volvería a hacerla',true);
+pruebas_respuestas.eliminar('Prueba 222- eliminar respuesta', OID_Ans, true);
 END;
 /
 
