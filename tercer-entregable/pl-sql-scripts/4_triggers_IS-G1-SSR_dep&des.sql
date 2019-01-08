@@ -1,4 +1,16 @@
 -------------------------------------------------------------------------------
+-- Proyecto: Deporte y Desafío
+-- ID Proyecto: IS-G1-SSR_dep&des
+-- Grupo de trabajo:
+-- Mario Ruano Fernández
+-- María Elena Molino Peña
+-- Alejandro José Muñoz Aranda
+-- Juan Carlos Cortés Muñoz
+
+-- script: 4_triggers_IS-G1-SSR_dep&des.sql
+-------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------
 -- TRIGGERS asociados a reglas de negocio
 -------------------------------------------------------------------------------
 

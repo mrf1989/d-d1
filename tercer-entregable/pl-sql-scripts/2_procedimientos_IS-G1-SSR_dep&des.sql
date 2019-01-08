@@ -1,4 +1,16 @@
 -------------------------------------------------------------------------------
+-- Proyecto: Deporte y Desafío
+-- ID Proyecto: IS-G1-SSR_dep&des
+-- Grupo de trabajo:
+-- Mario Ruano Fernández
+-- María Elena Molino Peña
+-- Alejandro José Muñoz Aranda
+-- Juan Carlos Cortés Muñoz
+
+-- script: 2_procedimientos_IS-G1-SSR_dep&des.sql
+-------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------
 -- FUNCIONES
 -------------------------------------------------------------------------------
 
@@ -49,10 +61,10 @@ END esMayorDeEdad;
 -- 1. Asociados a personas
 -- 2. Asociados a patrocinadores, patrocinios y donaciones
 -- 3. Asociados a proyectos y actividades
--- 4. Asociados a inscripciones y colaboraciones
--- 5. Asociados a mensajes y envíos
--- 6. Asociados a informes médicos de participantes
--- 7. Asociados a recibos
+-- 4. Asociados a recibos
+-- 5. Asociados a inscripciones y colaboraciones
+-- 6. Asociados a mensajes y envíos
+-- 7. Asociados a informes médicos de participantes
 -- 8. Asociados a cuestionarios
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
@@ -285,7 +297,40 @@ END Add_Actividad;
 /
 
 -------------------------------------------------------------------------------
--- 4. Asociados a inscripciones y colaboraciones
+-- 4. Asociados a recibos
+-------------------------------------------------------------------------------
+
+-- Registrar RECIBO de INSCRIPCION en el sistema de información
+CREATE OR REPLACE PROCEDURE Add_ReciboInscripcion (w_OID_Act IN ACTIVIDADES.OID_Act%TYPE, w_OID_Part IN PARTICIPANTES.OID_Part%TYPE,
+    w_fechaEmision IN RECIBOS.fechaEmision%TYPE, w_importe IN RECIBOS.importe%TYPE, w_estado IN RECIBOS.estado%TYPE) IS
+    w_fechaVencimiento RECIBOS.fechaVencimiento%TYPE;
+BEGIN
+    w_fechaVencimiento := calcularFechaVencimiento(w_fechaEmision);
+    INSERT INTO RECIBOS (fechaEmision, fechaVencimiento, importe, estado, OID_Act, OID_Part)
+    VALUES (w_fechaEmision, w_fechaVencimiento, w_importe, w_estado, w_OID_Act, w_OID_Part);
+    COMMIT WORK;
+END Add_ReciboInscripcion;
+/
+
+-- Actualizar RECIBO en el sistema de información
+CREATE OR REPLACE PROCEDURE Act_Recibo (w_OID_Rec IN RECIBOS.OID_Rec%TYPE, w_fechaVencimiento IN RECIBOS.fechaVencimiento%TYPE,
+    w_importe IN RECIBOS.importe%TYPE, w_estado IN RECIBOS.estado%TYPE) IS
+BEGIN
+    UPDATE RECIBOS SET fechaVencimiento=w_fechaVencimiento, importe=w_importe, estado=w_estado WHERE OID_Rec=w_OID_Rec;
+    COMMIT WORK;
+END Act_Recibo;
+/
+
+-- Cambiar estado de RECIBO en el sistema de información
+CREATE OR REPLACE PROCEDURE Act_EstadoRecibo (w_OID_Rec IN RECIBOS.OID_Rec%TYPE, w_estado IN RECIBOS.estado%TYPE) IS
+BEGIN
+    UPDATE RECIBOS SET estado=w_estado WHERE OID_Rec=w_OID_Rec;
+    COMMIT WORK;
+END Act_EstadoRecibo;
+/
+
+-------------------------------------------------------------------------------
+-- 5. Asociados a inscripciones y colaboraciones
 -------------------------------------------------------------------------------
 
 -- Inscribir PARTICIPANTE en ACTIVIDAD en el sistema de información
@@ -343,7 +388,7 @@ END Act_InteresParticipante;
 /
 
 -------------------------------------------------------------------------------
--- 5. Asociados a mensajes y envíos
+-- 6. Asociados a mensajes y envíos
 -------------------------------------------------------------------------------
 
 -- Registrar MENSAJE en el sistema de información
@@ -365,7 +410,7 @@ END Registrar_Envio;
 /
 
 -------------------------------------------------------------------------------
--- 6. Asociados a informes médicos de participantes
+-- 7. Asociados a informes médicos de participantes
 -------------------------------------------------------------------------------
 
 -- Añadir INFORME MEDICO a un PARTICIPANTE en el sistema de información
@@ -374,39 +419,6 @@ BEGIN
     INSERT INTO INFORMESMEDICOS (descripcion, fecha, OID_Part) VALUES (w_descripcion, SYSDATE, w_OID_Part);
     COMMIT WORK;
 END Add_InformeMedico;
-/
-
--------------------------------------------------------------------------------
--- 7. Asociados a recibos
--------------------------------------------------------------------------------
-
--- Registrar RECIBO de INSCRIPCION en el sistema de información
-CREATE OR REPLACE PROCEDURE Add_ReciboInscripcion (w_OID_Act IN ACTIVIDADES.OID_Act%TYPE, w_OID_Part IN PARTICIPANTES.OID_Part%TYPE,
-    w_fechaEmision IN RECIBOS.fechaEmision%TYPE, w_importe IN RECIBOS.importe%TYPE, w_estado IN RECIBOS.estado%TYPE) IS
-    w_fechaVencimiento RECIBOS.fechaVencimiento%TYPE;
-BEGIN
-    w_fechaVencimiento := calcularFechaVencimiento(w_fechaEmision);
-    INSERT INTO RECIBOS (fechaEmision, fechaVencimiento, importe, estado, OID_Act, OID_Part)
-    VALUES (w_fechaEmision, w_fechaVencimiento, w_importe, w_estado, w_OID_Act, w_OID_Part);
-    COMMIT WORK;
-END Add_ReciboInscripcion;
-/
-
--- Actualizar RECIBO en el sistema de información
-CREATE OR REPLACE PROCEDURE Act_Recibo (w_OID_Rec IN RECIBOS.OID_Rec%TYPE, w_fechaVencimiento IN RECIBOS.fechaVencimiento%TYPE,
-    w_importe IN RECIBOS.importe%TYPE, w_estado IN RECIBOS.estado%TYPE) IS
-BEGIN
-    UPDATE RECIBOS SET fechaVencimiento=w_fechaVencimiento, importe=w_importe, estado=w_estado WHERE OID_Rec=w_OID_Rec;
-    COMMIT WORK;
-END Act_Recibo;
-/
-
--- Cambiar estado de RECIBO en el sistema de información
-CREATE OR REPLACE PROCEDURE Act_EstadoRecibo (w_OID_Rec IN RECIBOS.OID_Rec%TYPE, w_estado IN RECIBOS.estado%TYPE) IS
-BEGIN
-    UPDATE RECIBOS SET estado=w_estado WHERE OID_Rec=w_OID_Rec;
-    COMMIT WORK;
-END Act_EstadoRecibo;
 /
 
 -------------------------------------------------------------------------------
